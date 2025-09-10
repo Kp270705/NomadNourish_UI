@@ -17,8 +17,8 @@
   import Texteditor from '../pages/Texteditor.svelte';
   import Cuisine from '../pages/Cuisine.svelte';
 
-  import Test1 from '../ui_Test/Test1.svelte';
-  import Test2 from '../ui_Test/Test2.svelte';
+  // import Test1 from '../ui_Test/Test1.svelte';
+  // import Test2 from '../ui_Test/Test2.svelte';
 
   // export let isLogin
   const routes = {
@@ -31,8 +31,10 @@
     '/acknowledgement': Acknowledgement, // <-- Route added
     '/textedit': Texteditor,
     '/restaurant/:id/cuisines': Cuisine,
-    '/test1': Test1,
-    '/test2': Test2,
+    
+
+    // '/test1': Test1,
+    // '/test2': Test2,
 
   };
 </script>
