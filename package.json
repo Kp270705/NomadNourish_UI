@@ -1,0 +1,39 @@
+{
+  "name": "frontend",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "@flowbite-svelte-plugins/texteditor": "^0.25.4",
+    "@sveltejs/vite-plugin-svelte": "^5.1.1",
+    "@tailwindcss/vite": "^4.1.12",
+    "@tiptap/core": "3.3.0",
+    "flowbite": "^3.1.2",
+    "flowbite-svelte": "^1.13.4",
+    "flowbite-svelte-blocks": "^2.1.0",
+    "flowbite-svelte-icons": "^3.0.0",
+    "flowbite-svelte-illustrations": "^1.0.5",
+    "flowbite-typography": "^1.0.5",
+    "lowlight": "^3.3.0",
+    "svelte": "^5.38.6",
+    "svelte-animated-icons": "^0.7.1",
+    "svelte-kawaii": "^0.3.5",
+    "tailwindcss": "^4.1.12",
+    "vite": "^6.3.5"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
+  },
+  "dependencies": {
+    "jwt-decode": "^4.0.0",
+    "svelte-animate": "0.6.0",
+    "svelte-spa-router": "^4.0.1"
+  }
+}
