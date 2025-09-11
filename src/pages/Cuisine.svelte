@@ -3,14 +3,17 @@
 <script>
   import { params } from 'svelte-spa-router';
   import { Card, Button } from "flowbite-svelte";
-  import { CheckCircleSolid, CircleMinusSolid } from 'flowbite-svelte-icons';
+  import { CheckCircleSolid, CircleMinusSolid, SearchOutline } from 'flowbite-svelte-icons';
   import routesType from "../config/backend_routes.js";
-
+  import { userData } from '../stores/authStore';
+  import { push } from 'svelte-spa-router';
+  
   // State variables
   let cuisines = [];
   let loading = false;
   let error = null;
   let restaurant_id = 0
+  let searchCuisine = "";
 
   // Reactive statement: fetch menu when restaurant id changes
   $: if ($params && $params.id) {
@@ -21,7 +24,7 @@
   }
 
   async function fetchCuisines(restaurantId) {
-    console.log(`\n\n\ttype of res_id: ${typeof(restaurantId)}`)
+    // console.log(`\n\n\ttype of res_id: ${typeof(restaurantId)}`)
     try {
       if (!restaurantId || isNaN(restaurantId)) {
         throw new Error('Invalid restaurant ID.');
@@ -48,6 +51,11 @@
       loading = false;
     }
   }
+
+  // ✅ filter cuisines by name
+  $: filteredCuisines = cuisines.filter(r =>
+    r.cuisine_name.toLowerCase().includes(searchCuisine.toLowerCase())
+  );
 
   // === CART LOGIC ===
   function selectOrder(index) {
@@ -86,11 +94,6 @@
     0
   );
 
-  // =======================================
-
-  // You need access to the user's ID from the store
-  import { userData } from '../stores/authStore';
-
   // Function to handle order submission
   async function submitOrder() {
     // 1. Check if the user is a normal user
@@ -124,7 +127,14 @@
         throw new Error(errorData.detail || 'Failed to place order.');
       }
 
-      alert("Order placed successfully!");
+      // ✅ Get the response data, which contains the new order's ID
+      const newOrder = await response.json();
+
+      // ✅ Navigate to the order details page using the new order's ID
+      push(`/my-orders`);
+
+
+      // alert("Order placed successfully!");
       // Optionally, clear the cart or navigate to a new page
       selectedItems = []; // This will also hide the "Order Now" button
     } catch (err) {
@@ -143,13 +153,27 @@
       Menu
     </h2>
 
+    <!-- search bar: -->
+    <div class="mb-6 flex items-center gap-2">
+      <div class="relative w-full">
+        <input
+          type="text"
+          bind:value={searchCuisine}
+          placeholder="Search by cuisine name..."
+          class="w-full rounded-lg border border-gray-300 px-4 py-2 pl-10 focus:ring-2 focus:ring-red-400 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+        />
+        <SearchOutline class="absolute left-3 top-2.5 text-gray-400" />
+      </div>
+    </div>
+
+
     {#if loading}
       <p class="text-center text-lg text-gray-700 dark:text-gray-300">Loading delicious dishes...</p>
     {:else if error}
       <p class="text-center text-xl font-semibold text-red-600 dark:text-red-400">Error: {error}</p>
-    {:else if cuisines.length > 0}
+    {:else if filteredCuisines.length > 0}
       <div class="space-y-4 grid-cols-1 mb-25">
-        {#each cuisines as cuisine, i (cuisine.id)}
+        {#each filteredCuisines as cuisine, i (cuisine.id)}
           <Card class="flex items-center justify-between p-4 shadow-lg rounded-lg bg-white dark:bg-gray-800 hover:shadow-xl transition-shadow duration-200 justify-self-center">
             <div class="flex-1 min-w-0 pr-4">
               <h3 class="text-xl font-bold text-gray-900 dark:text-white truncate">

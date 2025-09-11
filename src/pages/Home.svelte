@@ -50,6 +50,7 @@
 
     <div class="p-4 py-5 rounded-lg dark:border-gray-700 bg-white/70 dark:bg-gray-800/70 backdrop-blur">
 
+      <!-- search: -->
       <div class="mb-6 flex items-center gap-2">
         <div class="relative w-full">
           <input

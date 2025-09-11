@@ -16,6 +16,7 @@
   import Protected from '../pages/Protected.svelte';
   import Texteditor from '../pages/Texteditor.svelte';
   import Cuisine from '../pages/Cuisine.svelte';
+  import OrderHistory from '../pages/OrderHistory.svelte';
 
   // import Test1 from '../ui_Test/Test1.svelte';
   // import Test2 from '../ui_Test/Test2.svelte';
@@ -31,6 +32,7 @@
     '/acknowledgement': Acknowledgement, // <-- Route added
     '/textedit': Texteditor,
     '/restaurant/:id/cuisines': Cuisine,
+    '/my-orders': OrderHistory,
     
 
     // '/test1': Test1,
