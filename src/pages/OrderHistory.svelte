@@ -56,67 +56,6 @@
 
 </script>
 
-<!-- 
-<div class="p-8 min-h-screen bg-gray-50 dark:bg-gray-900">
-  <div class="max-w-6xl mx-auto">
-    <h1 class="text-4xl font-extrabold text-center mb-10 text-gray-900 dark:text-white">
-      Your Order History
-    </h1>
-
-    {#if loading}
-      <div class="text-center">
-        <Spinner size="8" color="red" class="mb-4" />
-        <p class="text-lg text-gray-600 dark:text-gray-400">Loading your orders...</p>
-      </div>
-
-    {:else if error}
-      <Card class="bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 shadow-md">
-        <p class="font-semibold">{error}</p>
-      </Card>
-
-    {:else if orders.length > 0}
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {#each orders as order (order.id)}
-          <Card
-            class="relative overflow-hidden bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 hover:scale-[1.02] transition-transform duration-300 justify-self-center"
-          >
-            <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-red-500 via-orange-500 to-yellow-500"></div>
-
-            <div class="p-6 space-y-4">
-              <span class="inline-block px-4 py-1 text-sm font-bold text-white bg-red-500 rounded-full shadow">
-                Order #{order.id}
-              </span>
-
-              <p class="text-lg font-semibold text-gray-800 dark:text-gray-100">
-                🍽️ Restaurant: <span class="font-normal">{order.restaurant_name}</span>
-              </p>
-              <p class="text-lg font-medium text-gray-800 dark:text-gray-100">
-                💰 Total Price: <span class="font-normal text-green-600 dark:text-green-400">₹{order.total_price.toFixed(2)}</span>
-              </p>
-              <p class="text-md text-gray-600 dark:text-gray-400">
-                📅 Placed On: <span class="font-medium">{formatNativeDate(order.order_date)}</span>
-              </p>
-
-              <h4 class="text-lg font-semibold mt-4 text-gray-900 dark:text-white">🛒 Items Ordered:</h4>
-              <ul class="space-y-1 text-gray-700 dark:text-gray-300 list-disc list-inside">
-                {#each order.items.split(', ') as item}
-                  <li class="flex items-center space-x-2">
-                    <span class="text-green-500">✔</span>
-                    <span>{item}</span>
-                  </li>
-                {/each}
-              </ul>
-            </div>
-          </Card>
-        {/each}
-      </div>
-    {:else}
-      <p class="text-center text-gray-600 dark:text-gray-400">You have no orders yet. Start ordering!</p>
-    {/if}
-  </div>
-</div>
- -->
-
 
 <!-- ✅ Order History Page -->
 <div class="p-8 min-h-screen bg-gray-50 dark:bg-gray-900">

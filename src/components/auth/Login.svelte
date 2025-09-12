@@ -47,7 +47,7 @@
   <div class="max-w-6xl w-full grid grid-cols-1 md:grid-cols-2 items-center gap-6 px-4">
     
     <!-- Left Side (Login Card) -->
-    <div class="bg-white shadow-xl rounded-2xl p-6 md:p-8 relative z-10">
+    <div class="bg-white dark:bg-gray-800 shadow-xl rounded-2xl p-6 md:p-8 relative z-10">
       <!-- Logo -->
       <h1 class="text-2xl font-extrabold text-orange-600 text-center mb-1">🍴 Foodle</h1>
       <p class="text-center text-gray-500 mb-3">Made with ❤️ for food lovers</p>
