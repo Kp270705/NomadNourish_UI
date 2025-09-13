@@ -1,8 +1,8 @@
 <script>
   import { onMount } from 'svelte';
   import { Card, Spinner } from "flowbite-svelte";
-  import routesType from "../config/backend_routes.js";
-  import { isAuthorized } from '../stores/authStore';
+  import routesType from "../../config/backend_routes.js";
+  import { isAuthorized } from '../../stores/authStore.js';
 
   // State variables
   let orders = [];

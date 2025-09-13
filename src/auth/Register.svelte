@@ -1,6 +1,6 @@
 <!-- Register.svelte -->
 <script>
-  import routesType from "../../config/backend_routes.js";
+  import routesType from "../config/backend_routes.js";
   
   // Flowbite components
   import { Card, Button, Label, Input, Checkbox, Helper } from "flowbite-svelte";
@@ -9,7 +9,7 @@
   import { push, link } from "svelte-spa-router";
   
   // Error Card
-  import Error from "../Card/AuthCard.svelte";
+  import Error from "../components/Card/AuthCard.svelte";
   
   // States
   let showError = $state(false);

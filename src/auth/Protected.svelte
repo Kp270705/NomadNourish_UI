@@ -4,15 +4,14 @@
 
   import { push } from 'svelte-spa-router';
   import { onMount } from 'svelte';
-  import Home from './Home.svelte';
   import { CardPlaceholder, ImagePlaceholder, Skeleton } from "flowbite-svelte";
   import { Toast } from "flowbite-svelte";
   import { CheckCircleSolid } from "flowbite-svelte-icons";
   import { Heading } from "flowbite-svelte";
-  
 
+  import C_Home from "../pages/Customer/C_Home.svelte";
   import { isAuthorized, checkAuth } from "../stores/authStore.js";
-
+  
 
   let successToast = false; // whether toast is visible
   let toastShown = false;   // prevent showing twice in same session
@@ -31,7 +30,7 @@
     INVALID_TOKEN: 422,
   };
     onMount(async () => {
-    const token = localStorage.getItem("jwt_token")
+    // const token = localStorage.getItem("jwt_token")
     await checkAuth()
     });
 
@@ -49,7 +48,7 @@
     <Skeleton size="2xl" class="mt-5 mb-2" />
 {:else}
   <div class={!currentIsAuthorized ? "blur-sm pointer-events-none select-none transition-all duration-300" : ""}>
-    {#if isAuthorized}
+    {#if $isAuthorized}
       {#if successToast}
       <div class="fixed top-4 left-1/2 transform -translate-x-1/2  z-50">
         <Toast color="green">
@@ -60,8 +59,8 @@
           Logged-in successfully.
         </Toast>
       </div>
-    {/if}
-      <Home />
+      {/if}
+      <C_Home />
     {/if}
   </div>
 

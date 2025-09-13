@@ -6,26 +6,31 @@
   import { UserCircleHero } from 'svelte-animated-icons';
   
   // Import the auth store
-  import { isAuthorized } from '../../stores/authStore.js';
+  import { isAuthorized, checkAuth } from '../../stores/authStore.js';
 
   // importing components: 
   import Darkmode from "../../components/Darkmode/Darkmode.svelte";
   import NavDropdown from "../Dropdown/NavDropdown.svelte";
   import UserDetails from "../popover/UserDetails.svelte";
-  import OrderHistory from "../../pages/OrderHistory.svelte";
+  import OrderHistory from "../../pages/Customer/C_OrderHistory.svelte";
   
   // import static content
   import CertGen from "../../assets/Images/landing/nn.png";
   import nn from "../../assets/icons/diet.png";
   
   let pages = [
-    { name: "Home", path: "/home" },
+    { name: "Home", path: "/CHome" },
     { name: "About", path: "/about" }
   ];
+  
 
   function showOptionsDrawer(){
     
   }
+
+  onMount(async () => {
+    await checkAuth()
+  });
 
 </script>
 
@@ -62,7 +67,7 @@
       <!-- Authenticated User Navigation -->
 
       <NavLi>
-        <a href="/my-orders" use:link class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:ring-2 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 transition-all duration-200" >
+        <a href="/CMy-orders" use:link class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:ring-2 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 transition-all duration-200" >
           My Orders
         </a>
       </NavLi>

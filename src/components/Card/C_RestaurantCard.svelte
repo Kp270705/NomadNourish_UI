@@ -78,7 +78,7 @@
 
     <!-- Action Buttons -->
     <div class="mt-4 flex flex-col sm:flex-row gap-4 w-full justify-center relative z-10">
-      <a use:link href={`/restaurant/${restaurant.id}/cuisines`} class="w-full sm:w-auto bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white text-center py-3 px-6 rounded-2xl font-medium shadow-lg hover:shadow-xl transition-all duration-300">
+      <a use:link href={`/CRestaurant/${restaurant.id}/cuisines`} class="w-full sm:w-auto bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white text-center py-3 px-6 rounded-2xl font-medium shadow-lg hover:shadow-xl transition-all duration-300">
         See cuisine
       </a>
       <Button color="light" class="w-full sm:w-auto dark:text-white bg-white dark:bg-gray-700 border-2 border-gray-200 dark:border-gray-600 hover:border-red-300 dark:hover:border-red-500 hover:text-red-600 dark:hover:text-red-400 py-3 px-6 rounded-2xl font-medium transition-all duration-300">

@@ -91,7 +91,6 @@ export async function checkAuth() {
     console.log(`✅ User authenticated from client-side check.\nUser: ${username}`);
     return true;
     
-
   } catch (err) {
     console.error("Token decoding failed", err);
     localStorage.removeItem("jwt_token");

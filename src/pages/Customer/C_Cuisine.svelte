@@ -2,8 +2,8 @@
   import { params } from 'svelte-spa-router';
   import { Card, Button } from "flowbite-svelte";
   import { CheckCircleSolid, CircleMinusSolid, SearchOutline, StarSolid, ClockOutline, FireOutline, MapPinOutline } from 'flowbite-svelte-icons';
-  import routesType from "../config/backend_routes.js";
-  import { userData } from '../stores/authStore';
+  import routesType from "../../config/backend_routes.js";
+  import { userData } from '../../stores/authStore.js';
   import { push } from 'svelte-spa-router';
 
   // State variables
@@ -94,7 +94,7 @@
         throw new Error(errorData.detail || 'Failed to place order.');
       }
       const newOrder = await response.json();
-      push(`/my-orders`);
+      push(`/CMy-orders`);
       selectedItems = [];
     } catch (err) {
       console.error("Order submission failed:", err);
@@ -103,7 +103,8 @@
   }
 </script>
 
-<div class="min-h-screen bg-white dark:bg-gray-900 transition-colors duration-300">
+<!-- <div class="min-h-screen bg-white dark:bg-gray-900 transition-colors duration-300"> -->
+<div class="min-h-screen bg-white dark:bg-gradient-to-r from-green-900 via-yellow-900 to-orange-900 transition-colors duration-300">
   <div class="relative overflow-hidden bg-gradient-to-r from-red-600 via-orange-600 to-yellow-600 dark:from-red-800 dark:via-orange-800 dark:to-yellow-800">
     <div class="absolute inset-0 bg-black/20"></div>
     <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -181,7 +182,7 @@
       </div>
     {:else if filteredCuisines.length > 0}
       
-      <div class="space-y-6 mb-32 ">
+      <div class="space-y-6 mb-50 ">
         {#each filteredCuisines as cuisine, i (cuisine.id)}
           <Card class="w-full max-w-full md:max-w-4xl lg:max-w-5xl mx-auto overflow-hidden bg-white dark:bg-gray-800 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-100 dark:border-gray-700">
             <div class="flex flex-col sm:flex-row items-stretch">
@@ -335,3 +336,4 @@
     animation-delay: calc(var(--index, 0) * 0.1s);
   }
 </style>
+

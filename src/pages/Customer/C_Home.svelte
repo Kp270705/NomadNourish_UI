@@ -2,9 +2,10 @@
   import { onMount } from 'svelte';
   import { SearchOutline, StarSolid, MapPinOutline, FireOutline } from "flowbite-svelte-icons";
   import { Spinner } from "flowbite-svelte";
-  import routesType from "../config/backend_routes.js";
-  import { user, restaurant, userType } from '../stores/authStore';
-  import RestaurantCard from "../components/Card/RestaurantCard.svelte";
+  import routesType from "../../config/backend_routes.js";
+  import { user, restaurant, userType } from "../../stores/authStore.js" ;
+  
+  import RestaurantCard from "../../components/Card/C_RestaurantCard.svelte";
 
   let allRestaurants = [];
   let loading = true;
@@ -160,7 +161,7 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
           {#each filteredRestaurants as restaurant, index (restaurant.id)}
-            <div class="transform hover:scale-105 transition-all duration-300" style="animation-delay: {index * 100}ms">
+            <div class="transform hover:scale-105 transition-all duration-300 justify-self-center" style="animation-delay: {index * 100}ms">
               <RestaurantCard {restaurant} />
             </div>
           {/each}

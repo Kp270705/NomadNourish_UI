@@ -1,11 +1,11 @@
 <!-- Login.svelte -->
 <script>
-  import { login } from "../../stores/authStore.js";
+  import { login } from "../stores/authStore.js";
   import { Button, Input, Label, Checkbox, Helper } from "flowbite-svelte";
   import { push } from "svelte-spa-router";
   import { link } from "svelte-spa-router";
-  import Error from "../Card/AuthCard.svelte";
-  import burger from "../../assets/icons/burger.png"
+  import Error from "../components/Card/AuthCard.svelte";
+  import burger from "../assets/icons/burger.png";
 
   let showError = $state(false);
   let errorMessage = $state("");
@@ -32,12 +32,12 @@
       errorMessage = result.message;
       showError = true;
       iconType = "loginSuccess";
-      setTimeout(() => push("/home"), 700);
+      setTimeout(() => push("/CHome"), 700);
     } else {
       errorMessage = result.message;
       showError = true;
       iconType = "wrongDetails";
-      setTimeout(() => push("/login"), 700);
+      setTimeout(() => push("/register"), 700);
     }
   }
 </script>
