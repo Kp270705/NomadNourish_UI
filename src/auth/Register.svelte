@@ -40,7 +40,7 @@
       
       const result = await response.json();
       
-      if (response.status === 400) {
+      if (response.status === 409) {
         setTimeout(() => {
           push("/register");
         }, 700);
