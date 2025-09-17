@@ -32,7 +32,7 @@
     '/login': Login,
     '/acknowledgement': Acknowledgement, // <-- Route added
     '/textedit': Texteditor,
-    'editDetails': EditDetails,
+    '/editDetails': EditDetails,
     
 
     // '/test1': Test1,

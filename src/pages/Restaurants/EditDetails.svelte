@@ -25,6 +25,7 @@
     error = null;
     try {
       const token = localStorage.getItem('jwt_token');
+      console.log(`\n\ntoken is: ${token}`)
       const response = await fetch(`${routesType.current_route}/restaurant/me`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
@@ -69,6 +70,7 @@
 
     try {
       const token = localStorage.getItem('jwt_token');
+      console.log(`\n\ntoken is: ${token}`)
       const response = await fetch(`${routesType.current_route}/restaurant/update_details`, {
         method: 'PATCH',
         headers: {
@@ -98,6 +100,7 @@
   }
 
   onMount(fetchRestaurantDetails);
+
 </script>
 
 <div class="p-8 min-h-screen bg-gray-50 dark:bg-gray-900">
