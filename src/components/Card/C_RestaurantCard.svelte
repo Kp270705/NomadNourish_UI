@@ -4,8 +4,6 @@
   import { link } from 'svelte-spa-router';
   import food from "../../assets/icons/food1.png";
 
-  let icon = "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcTbrOFGnPo_bZ3PCSXX8QmG3dsktjLi0VdHmtASGZWtENLA_wRM1XfK9x5KPiel6jFrOyO7XVSA4_dd8jB95M0xyK73RpdrifrrrcWcgXG6sA"
-
   export let restaurant;
   
   // Mock data for enhanced card (you can replace with real data from your API)
@@ -13,7 +11,6 @@
   const reviewCount = Math.floor(Math.random() * 500) + 100; // Random review count
   const cuisineTypes = ['Italian', 'Indian', 'Chinese', 'Mexican', 'Thai'];
   const randomCuisine = cuisineTypes[Math.floor(Math.random() * cuisineTypes.length)];
-  console.log(`restaurant url is: ${restaurant.image_url}`)
 
 </script>
 
@@ -59,14 +56,6 @@
           class="relative bg-gradient-to-br from-yellow-400 to-orange-500 dark:from-red-500 dark:to-orange-600 transition-all duration-500 group-hover:scale-110 shadow-lg ring-4 ring-white dark:ring-gray-800" 
         />
         {/if}
-
-
-        
-        <!-- <Avatar 
-          size="xl" 
-          src={icon} 
-          class="relative bg-gradient-to-br from-yellow-400 to-orange-500 dark:from-red-500 dark:to-orange-600 transition-all duration-500 group-hover:scale-110 shadow-lg ring-4 ring-white dark:ring-gray-800" 
-        /> -->
 
       </div>
     </div>
