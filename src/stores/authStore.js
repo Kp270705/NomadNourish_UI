@@ -35,7 +35,6 @@ export async function checkAuth() {
   const userDetailsString = localStorage.getItem("user_details"); // Get the stored details
 
   if (!token || !userDetailsString) {
-    // If no token, we're definitely not authorized
     isAuthorized.set(false);
     console.log("\n\tNo token found no detail");
     dropdownButton.set('Sign-In');

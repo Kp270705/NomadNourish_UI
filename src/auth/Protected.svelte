@@ -10,11 +10,14 @@
   import { Heading } from "flowbite-svelte";
 
   import C_Home from "../pages/Customer/C_Home.svelte";
+  import RHome from '../pages/Restaurants/R_Home.svelte';
+  import EditDetails from '../pages/Restaurants/R_EditDetails.svelte';
   import { isAuthorized, checkAuth } from "../stores/authStore.js";
   
 
   let successToast = false; // whether toast is visible
   let toastShown = false;   // prevent showing twice in same session
+  const user_type = localStorage.getItem("user_type");
 
   $: currentIsAuthorized = $isAuthorized;
   // Check if we should show toast
@@ -30,7 +33,6 @@
     INVALID_TOKEN: 422,
   };
     onMount(async () => {
-    // const token = localStorage.getItem("jwt_token")
     await checkAuth()
     });
 
@@ -49,6 +51,8 @@
 {:else}
   <div class={!currentIsAuthorized ? "blur-sm pointer-events-none select-none transition-all duration-300" : ""}>
     {#if $isAuthorized}
+
+    <!-- successToast: -->
       {#if successToast}
       <div class="fixed top-4 left-1/2 transform -translate-x-1/2  z-50">
         <Toast color="green">
@@ -60,7 +64,13 @@
         </Toast>
       </div>
       {/if}
-      <C_Home />
+      {#if user_type == "user"}
+        <C_Home />
+      {/if}
+      {#if user_type == "restaurant"}
+        <!-- <EditDetails /> -->
+        <RHome />
+      {/if}
     {/if}
   </div>
 

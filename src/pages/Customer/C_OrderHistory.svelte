@@ -34,7 +34,7 @@
         throw new Error("No authorization token found. Please log in.");
       }
       
-      const response = await fetch(`${routesType.current_route}/order/my-orders`, {
+      const response = await fetch(`${routesType.current_route}/order/user/my-orders`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
 

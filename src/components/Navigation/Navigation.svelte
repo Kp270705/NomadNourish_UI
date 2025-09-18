@@ -4,6 +4,7 @@
   import { link } from 'svelte-spa-router';
   import { onMount } from 'svelte';
   import { UserCircleHero } from 'svelte-animated-icons';
+  const user_type = localStorage.getItem("user_type");
   
   // Import the auth store
   import { isAuthorized, checkAuth } from '../../stores/authStore.js';
@@ -39,7 +40,7 @@
 <Navbar>
   <NavBrand href="/">
     <img src={nn} class="me-3 h-6 sm:h-9" alt="Flowbite Logo" />
-    <span class="self-center text-xl font-semibold whitespace-nowrap dark:text-white">Flowbite</span>
+    <span class="self-center text-xl font-semibold whitespace-nowrap dark:text-white">NomadNourish</span>
   </NavBrand>
   <div class="flex md:order-2">
     <Button size="sm" onclick={showOptionsDrawer} >Get started</Button>

@@ -16,27 +16,38 @@
   import Texteditor from '../pages/Texteditor.svelte';
   import Cuisine from '../pages/Customer/C_Cuisine.svelte';
   import OrderHistory from '../pages/Customer/C_OrderHistory.svelte';
-  import EditDetails from '../pages/Restaurants/EditDetails.svelte';
+  import EditDetails from '../pages/Restaurants/R_EditDetails.svelte';
+  import CreateCousine from '../pages/Restaurants/R_CreateCousine.svelte';
+  import RHome from '../pages/Restaurants/R_Home.svelte';
+  import ROrderHistory from '../pages/Restaurants/R_OrderHistory.svelte';
 
   // import Test1 from '../ui_Test/Test1.svelte';
   // import Test2 from '../ui_Test/Test2.svelte';
 
   // export let isLogin
   const routes = {
-    '/CHome': Protected,
-    '/CRestaurant/:id/cuisines': Cuisine,
-    '/CMy-orders': OrderHistory,
     '/': Landing,
     '/about': About,
     '/register': Register,
     '/login': Login,
+
+    // -----------------------------------------------
+    // User:
+    '/CHome': Protected,
+    '/CRestaurant/:id/cuisines': Cuisine,
+    '/CMy-orders': OrderHistory,
     '/acknowledgement': Acknowledgement, // <-- Route added
     '/textedit': Texteditor,
-    '/editDetails': EditDetails,
+
+    // -----------------------------------------------
+    // Restaurant:
+    "/RHome": RHome,
+    '/REditDetails': EditDetails,
+    '/RCreateCuisine': CreateCousine,
+    '/ROrderHistory': ROrderHistory,
     
 
-    // '/test1': Test1,
-    // '/test2': Test2,
+
 
   };
 </script>
