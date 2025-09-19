@@ -4,7 +4,7 @@
 
   import { push } from 'svelte-spa-router';
   import { onMount } from 'svelte';
-  import { CardPlaceholder, ImagePlaceholder, Skeleton } from "flowbite-svelte";
+  import { CardPlaceholder, ImagePlaceholder, VideoPlaceholder, TextPlaceholder } from "flowbite-svelte";
   import { Toast } from "flowbite-svelte";
   import { CheckCircleSolid } from "flowbite-svelte-icons";
   import { Heading } from "flowbite-svelte";
@@ -40,15 +40,17 @@
 
 
 {#if !currentIsAuthorized}
-   <Heading  tag="h6" class="mt-0 mb-10 text-blue-400 dark:text-yellow-300 uppercase italic underline text-center font-semibold bg-gray-50 dark:bg-gray-700 p-4" >
-    Please login first ...
-  </Heading>
-  <Skeleton size="xl" class="mt-5 mb-2" />
-  <br> <br>
-  <ImagePlaceholder size="lg" class="ml-4" />
-  <br> <br>
-    <Skeleton size="2xl" class="mt-5 mb-2" />
-{:else}
+      <Heading  tag="h6" class="mt-0 mb-10 text-blue-400 dark:text-yellow-300 uppercase italic underline text-center font-semibold bg-gray-50 dark:bg-gray-700 p-4" >
+       Please login first ...
+     </Heading>
+      <div class="grid grid-cols-1 lg:grid-cols-3 lg:gap-8">
+       {#each {length: 6} as _, i}
+        <div class="justify-self-center">
+          <CardPlaceholder />
+        </div>
+       {/each}
+      </div>
+    {:else}
   <div class={!currentIsAuthorized ? "blur-sm pointer-events-none select-none transition-all duration-300" : ""}>
     {#if $isAuthorized}
 

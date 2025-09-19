@@ -71,9 +71,16 @@
       </div>
 
     {:else if error}
-      <Card class="bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 shadow-md">
-        <p class="font-semibold">{error}</p>
-      </Card>
+      <div class="text-center py-16">
+        <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl p-12 shadow-lg border border-gray-100 dark:border-gray-700 max-w-2xl mx-auto">
+          <div class="text-6xl mb-6">👋</div>
+          <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Message from admin!</h3>
+           <strong class="text-red-600 dark:text-red-400 text-lg">Please Login </strong>
+          <span>
+              <strong>Then you get access to check all available hotels. </strong>
+          </span>
+        </div>
+      </div>
 
     {:else if orders.length > 0}
       <!-- ✅ Latest Order -->

@@ -1,7 +1,7 @@
 import { writable } from 'svelte/store';
 import routesType from '../config/backend_routes';
 import {jwtDecode} from 'jwt-decode';
-import { loc } from 'svelte-spa-router';
+import { loc, push } from 'svelte-spa-router';
 
 // Create the auth store
 export const isAuthorized = writable(false);
@@ -182,12 +182,28 @@ export async function login(formData) {
 }
 
 // Logout function
-export function logout() {
+export async function logout() {
+  const token = localStorage.getItem("jwt_token");
+
+  if (token) {
+    try {
+      await fetch(`${routesType.current_route}/auth/logout`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+    } catch (err) {
+      console.error("Logout API call failed:", err);
+    }
+  }
+
+  // Clear the token and state on the client side
   localStorage.removeItem("jwt_token");
-  localStorage.removeItem("user_details");
-  localStorage.removeItem("user_type");
   isAuthorized.set(false);
-  dropdownButton.set('Sign-In');
+  // authRoute.set('Sign-In');
   userData.set(null);
+  userType.set(null);
   console.log("✅ User logged out");
+  push('/'); // Redirect to the landing page
 }

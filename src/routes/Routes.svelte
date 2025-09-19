@@ -22,6 +22,8 @@
   import ROrderHistory from '../pages/Restaurants/R_OrderHistory.svelte';
   import CHome from '../pages/Customer/C_Home.svelte';
 
+  import TestCredentials from '../pages/TestCredentials.svelte';
+
   // import Test1 from '../ui_Test/Test1.svelte';
   // import Test2 from '../ui_Test/Test2.svelte';
 
@@ -33,6 +35,7 @@
     '/login': Login,
     '/protectedHome': Protected,
     "/CHome":CHome,
+    "/test-credentials": TestCredentials,
 
     // -----------------------------------------------
     // User:

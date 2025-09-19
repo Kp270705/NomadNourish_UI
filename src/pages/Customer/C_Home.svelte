@@ -13,7 +13,6 @@
   let searchLocation = "";
 
   onMount(async () => {
-    if ($isAuthorized ) {
       try {
         const token = localStorage.getItem('jwt_token');
         const response = await fetch(`${routesType.current_route}/restaurant/get_all`, {
@@ -30,9 +29,6 @@
       } finally {
         loading = false;
       }
-    } else {
-      loading = false;
-    }
   });
 
   $: filteredRestaurants = allRestaurants.filter(r =>
@@ -144,8 +140,7 @@
             <span class="bg-gradient-to-r from-red-500 to-orange-500 text-white px-4 py-2 rounded-full text-sm font-medium shadow-lg">
               {filteredRestaurants.length} found
             </span>
-          </div>
-          
+          </div>          
           <!-- Fancy Quote -->
           <div class="bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 rounded-2xl p-8 mb-12 border border-indigo-100 dark:border-indigo-800">
             <blockquote class="text-center">
@@ -177,16 +172,22 @@
           </div>
         </div>
       {/if}
+
     {:else}
       <div class="text-center py-16">
         <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl p-12 shadow-lg border border-gray-100 dark:border-gray-700 max-w-2xl mx-auto">
           <div class="text-6xl mb-6">👋</div>
-          <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Welcome to FlowBite!</h3>
-          <p class="text-gray-600 dark:text-gray-400 text-lg">
-            You're logged in as a restaurant owner. Visit your dashboard to manage your restaurant details.
-          </p>
+          <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Welcome to Nomad Nourish!</h3>
+          <span class="text-red-600 dark:text-red-400 text-lg" >Please login</span>
+          <span class="text-gray-600 dark:text-gray-400 text-lg" >for better experience. 😋 🤩</span>
+          <span>
+            <p class="text-gray-900 dark:text-gray-400 text-lg">
+              <strong>After login you get access to check all available hotels. </strong>
+            </p>
+          </span>
         </div>
       </div>
+
     {/if}
   </div>
 </div>
