@@ -20,6 +20,7 @@
   import CreateCousine from '../pages/Restaurants/R_CreateCousine.svelte';
   import RHome from '../pages/Restaurants/R_Home.svelte';
   import ROrderHistory from '../pages/Restaurants/R_OrderHistory.svelte';
+  import CHome from '../pages/Customer/C_Home.svelte';
 
   // import Test1 from '../ui_Test/Test1.svelte';
   // import Test2 from '../ui_Test/Test2.svelte';
@@ -30,10 +31,11 @@
     '/about': About,
     '/register': Register,
     '/login': Login,
+    '/protectedHome': Protected,
+    "/CHome":CHome,
 
     // -----------------------------------------------
     // User:
-    '/CHome': Protected,
     '/CRestaurant/:id/cuisines': Cuisine,
     '/CMy-orders': OrderHistory,
     '/acknowledgement': Acknowledgement, // <-- Route added

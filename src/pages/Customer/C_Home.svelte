@@ -3,7 +3,7 @@
   import { SearchOutline, StarSolid, MapPinOutline, FireOutline } from "flowbite-svelte-icons";
   import { Spinner } from "flowbite-svelte";
   import routesType from "../../config/backend_routes.js";
-  import { user, restaurant, userType } from "../../stores/authStore.js" ;
+  import { user, restaurant, userType, isAuthorized } from "../../stores/authStore.js" ;
   
   import RestaurantCard from "../../components/Card/C_RestaurantCard.svelte";
 
@@ -13,7 +13,7 @@
   let searchLocation = "";
 
   onMount(async () => {
-    if ($userType === 'user') {
+    if ($isAuthorized ) {
       try {
         const token = localStorage.getItem('jwt_token');
         const response = await fetch(`${routesType.current_route}/restaurant/get_all`, {
@@ -76,7 +76,7 @@
       </div>
 
       <!-- Stats Cards -->
-      {#if !loading && $userType === 'user'}
+      {#if !loading }
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
           <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700">
             <div class="flex items-center justify-between">
@@ -120,7 +120,7 @@
 
   <!-- Main Content -->
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
-    {#if $userType === 'user'}
+    {#if $isAuthorized}
       {#if loading}
         <div class="flex justify-center items-center h-64">
           <div class="text-center">

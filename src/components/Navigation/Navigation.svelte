@@ -4,7 +4,6 @@
   import { link } from 'svelte-spa-router';
   import { onMount } from 'svelte';
   import { UserCircleHero } from 'svelte-animated-icons';
-  const user_type = localStorage.getItem("user_type");
   
   // Import the auth store
   import { isAuthorized, checkAuth } from '../../stores/authStore.js';
@@ -16,11 +15,11 @@
   import OrderHistory from "../../pages/Customer/C_OrderHistory.svelte";
   
   // import static content
-  import CertGen from "../../assets/Images/landing/nn.png";
   import nn from "../../assets/icons/diet.png";
   
+  const user_type = localStorage.getItem("user_type");
   let pages = [
-    { name: "Home", path: "/CHome" },
+    { name: "Home", path: "/protectedHome" },
     { name: "About", path: "/about" }
   ];
   
@@ -64,15 +63,13 @@
           Sign In
         </a>
       </NavLi>
-    {:else}
+    {:else if user_type=="user"}
       <!-- Authenticated User Navigation -->
-
       <NavLi>
         <a href="/CMy-orders" use:link class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:ring-2 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 transition-all duration-200" >
           My Orders
         </a>
       </NavLi>
-
       <NavLi class="relative">
         <div class="flex items-center space-x-2">
           <UserCircleHero

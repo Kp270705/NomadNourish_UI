@@ -1,14 +1,15 @@
 
 <script>
   import { Popover, Button, Avatar } from "flowbite-svelte";
-  import usericon from "../../assets/icons/user2.png";
-  import FormDrawer from "../Drawer/FormDrawer.svelte";
   import routesType from "../../config/backend_routes";
   import { FaceExplodeSolid } from "flowbite-svelte-icons";
+  
   import { user, userType } from "../../stores/authStore";
-
+  import FormDrawer from "../Drawer/FormDrawer.svelte";
+  
+  import usericon from "../../assets/icons/user2.png";
+  
   let open1 = false;
-
   $: userName = $user.name;
   $: userEmail = $user.email;
   $: userImageUrl = $user.image_url;

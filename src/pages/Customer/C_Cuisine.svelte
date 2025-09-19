@@ -3,7 +3,7 @@
   import { Card, Button } from "flowbite-svelte";
   import { CheckCircleSolid, CircleMinusSolid, SearchOutline, StarSolid, ClockOutline, FireOutline, MapPinOutline } from 'flowbite-svelte-icons';
   import routesType from "../../config/backend_routes.js";
-  import { userData } from '../../stores/authStore.js';
+  import { userData, userType } from '../../stores/authStore.js';
   import { push } from 'svelte-spa-router';
 
   // State variables
@@ -14,6 +14,7 @@
   let searchCuisine = "";
   let restaurantName = "Loading..."; 
   let restaurantLocation = "";
+  const user_type = localStorage.getItem("user_type")
 
   $: if ($params && $params.id) {
     loading = true;
@@ -148,6 +149,7 @@
       </div>
     </div>
   </div>
+
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
     <div class="mb-12">
       <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-xl p-8 border border-gray-100 dark:border-gray-700">
@@ -203,45 +205,55 @@
                   </div>
                 </div>
                 <div class="mt-4 flex justify-end">
-                  {#if cuisine.count === 0}
-                    <Button 
-                      onclick={() => selectOrder(i)}
-                      class="flex items-center gap-3 px-6 py-3 rounded-2xl text-white font-semibold bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 shadow-lg transition-all duration-300"
-                    >
-                      <CheckCircleSolid class="w-5 h-5" />
-                      Add to Cart
-                    </Button>
-                  {:else}
-                    <div class="flex items-center gap-4">
+                  {#if user_type==="user"}
+                    {#if cuisine.count === 0}
                       <Button 
-                        color="gray" 
-                        size="sm" 
-                        onclick={() => unselect(i)}
-                        class="px-4 py-2 rounded-xl text-sm font-semibold text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600"
+                        onclick={() => selectOrder(i)}
+                        class="flex items-center gap-3 px-6 py-3 rounded-2xl text-white font-semibold bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 shadow-lg transition-all duration-300"
                       >
-                        Remove
+                        <CheckCircleSolid class="w-5 h-5" />
+                        Add to Cart
                       </Button>
-                      <div class="flex items-center gap-3 bg-gray-100 dark:bg-gray-700 rounded-2xl p-2">
+                    {:else}
+                      <div class="flex items-center gap-4">
                         <Button 
-                          color="light" 
+                          color="gray" 
                           size="sm" 
-                          onclick={() => decrement(i)}
-                          class="w-8 h-8 rounded-xl flex items-center justify-center font-bold text-lg"
+                          onclick={() => unselect(i)}
+                          class="px-4 py-2 rounded-xl text-sm font-semibold text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600"
                         >
-                          -
+                          Remove
                         </Button>
-                        <span class="font-bold text-xl text-gray-900 dark:text-white min-w-8 text-center">{cuisine.count}</span>
-                        <Button 
-                          color="light" 
-                          size="sm" 
-                          onclick={() => increment(i)}
-                          class="w-8 h-8 rounded-xl flex items-center justify-center font-bold text-lg"
-                        >
-                          +
-                        </Button>
+                        <div class="flex items-center gap-3 bg-gray-100 dark:bg-gray-700 rounded-2xl p-2">
+                          <Button 
+                            color="light" 
+                            size="sm" 
+                            onclick={() => decrement(i)}
+                            class="w-8 h-8 rounded-xl flex items-center justify-center font-bold text-lg"
+                          >
+                            -
+                          </Button>
+                          <span class="font-bold text-xl text-gray-900 dark:text-white min-w-8 text-center">{cuisine.count}</span>
+                          <Button 
+                            color="light" 
+                            size="sm" 
+                            onclick={() => increment(i)}
+                            class="w-8 h-8 rounded-xl flex items-center justify-center font-bold text-lg"
+                          >
+                            +
+                          </Button>
+                        </div>
                       </div>
-                    </div>
+                    {/if}
+                  {:else}
+                      <Button 
+                        class="flex items-center gap-3 px-6 py-3 rounded-2xl text-white font-semibold bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-yellow-700 shadow-lg transition-all duration-300"
+                      >
+                        <CheckCircleSolid class="w-5 h-5" />
+                        Users can Order
+                      </Button>
                   {/if}
+
                 </div>
               </div>
             </div>

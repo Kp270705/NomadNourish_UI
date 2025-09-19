@@ -32,7 +32,7 @@
       errorMessage = result.message;
       showError = true;
       iconType = "loginSuccess";
-      setTimeout(() => push("/CHome"), 700);
+      setTimeout(() => push("/protectedHome"), 700);
     } else {
       errorMessage = result.message;
       showError = true;
