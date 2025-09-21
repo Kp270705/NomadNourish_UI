@@ -9,6 +9,7 @@
 
   // Import the auth store
   import { isAuthorized, checkAuth, logout } from '../../stores/authStore.js';
+  import AlertSignout from "../alert/AlertSignout.svelte";
 
   // importing components: 
   import Darkmode from "../../components/Darkmode/Darkmode.svelte";
@@ -25,9 +26,12 @@
     { name: "About", path: "/about" }
   ];
   
+  let isSignOut = false
 
   function showOptionsDrawer(){
-    
+  }
+  function showSignOut(){
+
   }
 
   onMount(async () => {
@@ -65,7 +69,7 @@
             <Button 
             color="red" 
             class="w-full justify-center font-medium shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-105"
-            onclick={logout}
+            onclick={showSignOut}
             >
               SignOut
             </Button>
@@ -118,6 +122,9 @@
     {/if}
   </NavUl>
 </Navbar>
+
+<AlertSignout defaultModal={isSignOut}/>
+
 
 <style>
   /* Mobile responsive adjustments */
