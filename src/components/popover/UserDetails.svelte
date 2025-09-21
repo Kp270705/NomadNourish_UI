@@ -1,8 +1,8 @@
-
 <script>
   import { Popover, Button, Avatar } from "flowbite-svelte";
   import routesType from "../../config/backend_routes";
   import { FaceExplodeSolid } from "flowbite-svelte-icons";
+  import { UserCircleHero } from 'svelte-animated-icons';
   
   import { user, userType } from "../../stores/authStore";
   import FormDrawer from "../Drawer/FormDrawer.svelte";
@@ -14,14 +14,13 @@
   $: userEmail = $user.email;
   $: userImageUrl = $user.image_url;
 
-  console.log(`user name: ${$user.name}`);
-  console.log(`user email: ${$user.email}`);
-  console.log(`user image url: ${$user.image_url}`);
-  console.log(`user type from store: ${$userType}`);
-
-
 </script>
 
+<UserCircleHero
+  size={40}
+  color="#ff1245"
+  class="duration-600 hover:scale-120"
+/>
 
 <Popover class="w-64 bg-white text-sm font-light text-gray-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400">
   <div class="p-3">
