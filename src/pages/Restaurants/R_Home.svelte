@@ -57,6 +57,23 @@
         </a>
       </Card>
 
+      <Card class="flex flex-col items-center p-8 text-center rounded-3xl shadow-xl transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+        <div class="text-6xl text-red-500 mb-4">
+           <FileChartBarSolid />
+        </div>
+        <h3 class="text-2xl font-bold mb-2 text-gray-900 dark:text-white">
+          Edit Details
+        </h3>
+        <p class="text-gray-600 dark:text-gray-400 mb-6">
+          Edit your basic details like.
+        </p>
+        <a use:link href="/REditDetails" class="w-full">
+          <Button class="w-full h-12 bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 text-white font-bold transition-all duration-300 rounded-xl shadow-lg">
+            Edit
+          </Button>
+        </a>
+      </Card>
+
       
 
     </div>
