@@ -21,6 +21,7 @@
   import RHome from '../pages/Restaurants/R_Home.svelte';
   import ROrderHistory from '../pages/Restaurants/R_OrderHistory.svelte';
   import CHome from '../pages/Customer/C_Home.svelte';
+  import RManageCuisine from '../pages/Restaurants/R_ManageCuisine.svelte';
 
   import TestCredentials from '../pages/TestCredentials.svelte';
 
@@ -49,6 +50,7 @@
     "/RHome": RHome,
     '/REditDetails': EditDetails,
     '/RCreateCuisine': CreateCousine,
+    '/RManageCuisine': RManageCuisine,
     '/ROrderHistory': ROrderHistory,
     
 
