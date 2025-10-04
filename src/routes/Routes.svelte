@@ -17,13 +17,15 @@
   import Cuisine from '../pages/Customer/C_Cuisine.svelte';
   import OrderHistory from '../pages/Customer/C_OrderHistory.svelte';
   import EditDetails from '../pages/Restaurants/R_EditDetails.svelte';
-  import CreateCousine from '../pages/Restaurants/R_CreateCousine.svelte';
+  import CreateCousine from '../pages/Restaurants/R_CreateCuisine.svelte';
   import RHome from '../pages/Restaurants/R_Home.svelte';
   import ROrderHistory from '../pages/Restaurants/R_OrderHistory.svelte';
   import CHome from '../pages/Customer/C_Home.svelte';
   import RManageCuisine from '../pages/Restaurants/R_ManageCuisine.svelte';
 
   import TestCredentials from '../pages/TestCredentials.svelte';
+  import Test from '../pages/Test.svelte';
+  import RStatus from '../pages/Restaurants/R_Status.svelte';
 
   // import Test1 from '../ui_Test/Test1.svelte';
   // import Test2 from '../ui_Test/Test2.svelte';
@@ -37,6 +39,7 @@
     '/protectedHome': Protected,
     "/CHome":CHome,
     "/test-credentials": TestCredentials,
+    '/test':Test,
 
     // -----------------------------------------------
     // User:
@@ -52,6 +55,7 @@
     '/RCreateCuisine': CreateCousine,
     '/RManageCuisine': RManageCuisine,
     '/ROrderHistory': ROrderHistory,
+    '/RStatus': RStatus,
     
 
 
