@@ -1,0 +1,1019 @@
+<div class="min-h-screen bg-pink-50 dark:bg-pink-900 transition-colors duration-300 flex flex-row items-center justify-center py-2 px-2 sm:py-[5vh] sm:pb-[10vh] sm:px-[10vw]">
+  <div class=" bg-amber-200 w-[100%] gap-2 ">
+    <div class="grid grid-cols-1 lg:grid-cols-2">
+      
+       <!-- <Card class="p-8 bg-white dark:bg-gray-800 rounded-3xl shadow-xl border border-gray-200 dark:border-gray-700" > -->
+      <Card class="p-8 bg-white dark:bg-gray-800 rounded-3xl shadow-xl border border-gray-200 dark:border-gray-700 h-full" style="width:100%; max-width: none;" >
+
+        <div class="flex flex-col items-center text-center mb-8">
+          <div class="w-20 h-20 mb-4 flex items-center justify-center text-6xl">
+            🍕
+          </div>
+          <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+            Add a new cuisine
+          </h1>
+          <p class="text-gray-500 dark:text-gray-400">
+            Fill in the details for your new dish.
+          </p>
+        </div>
+
+        <form onsubmit={handleSubmit} class="space-y-6">
+          <div class="space-y-2">
+            <Label for="cuisine_name" class="text-gray-700 dark:text-gray-300">
+              Cuisine Name
+            </Label>
+            <Input 
+              type="text" 
+              name="cuisine_name" 
+              id="cuisine_name" 
+              bind:value={newCuisine.cuisine_name} 
+              placeholder="e.g., Spicy Pizza" 
+              required 
+              class="bg-gray-100 dark:bg-gray-700"
+            />
+          </div>
+
+          <div class="space-y-2">
+            <Label for="price_half" class="text-gray-700 dark:text-gray-300">
+              Half Price (₹)
+            </Label>
+            <Input 
+              type="number" 
+              name="price_half" 
+              id="price_half" 
+              bind:value={newCuisine.price_half} 
+              placeholder="it can be empty" 
+              step="1"
+              class="bg-gray-100 dark:bg-gray-700"
+            />
+          </div>
+
+          <div class="space-y-2">
+            <Label for="price_full" class="text-gray-700 dark:text-gray-300">
+              Full Price (₹)
+            </Label>
+            <Input 
+              type="number" 
+              name="price_full" 
+              id="price_full" 
+              bind:value={newCuisine.price_full} 
+              placeholder="0" 
+              step="1" 
+              required 
+              class="bg-gray-100 dark:bg-gray-700"
+            />
+          </div>
+
+          <div class="space-y-3">
+            <Label class="text-gray-700 dark:text-gray-300">Dietary Category</Label>
+            <div class="flex gap-3 bg-gray-100 dark:bg-gray-700 p-2 rounded-lg">
+              {#each dietaryOptions as opt}
+                <button
+                  type="button"
+                  onclick={() => newCuisine.category = opt}
+                  class={`flex-1 py-2.5 px-4 rounded-md text-sm font-medium transition-all duration-200 ${
+                    newCuisine.category === opt
+                      ? "bg-gradient-to-r from-red-500 to-orange-500 text-white shadow-lg"
+                      : "bg-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+                  }`}
+                >
+                  {opt}
+                </button>
+              {/each}
+            </div>
+          </div>
+
+          <Button
+            type="submit"
+            class="w-full h-12 text-base font-semibold bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600"
+            disabled={isSubmitting}
+          >
+            {#if isSubmitting}
+              Adding...
+            {:else}
+              Add Cuisine
+            {/if}
+          </Button>
+        </form>
+      </Card>
+      
+
+       <!-- <Card class="p-8 bg-white dark:bg-gray-800 rounded-3xl shadow-xl border border-gray-200 dark:border-gray-700"> -->
+      <Card class="p-8 bg-white dark:bg-gray-800 rounded-3xl shadow-xl border border-gray-200 dark:border-gray-700 h-full" style="width:100%; max-width: none;" >
+
+        <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+          Your Current Existing Menu
+        </h2>
+
+        {#if loading}
+          <div class="text-center py-8">
+            <Spinner size="8" color="red" />
+          </div>
+        {:else}
+          <div class="overflow-x-auto">
+            <table class="w-full">
+              <thead>
+                <tr class="border-b border-gray-200 dark:border-gray-700">
+                  <th class="text-left py-3 px-2 text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                    Dish Name
+                  </th>
+                  <th class="text-left py-3 px-2 text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                    Half Price
+                  </th>
+                  <th class="text-left py-3 px-2 text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                    Full Price
+                  </th>
+                  <th class="text-left py-3 px-2 text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                    Category
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {#if cuisines.length === 0}
+                  <tr>
+                    <td colspan="4" class="text-center py-8 text-gray-500 dark:text-gray-400">
+                      You have no cuisines added yet.
+                    </td>
+                  </tr>
+                {:else}
+                  {#each cuisines as cuisine (cuisine.id)}
+                    <tr class="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                      <td class="py-4 px-2 text-gray-900 dark:text-white font-medium">
+                        {cuisine.cuisine_name}
+                      </td>
+                      <td class="py-4 px-2 text-gray-900 dark:text-white">
+                        {cuisine.price_half ? `₹${cuisine.price_half}` : '-'}
+                      </td>
+                      <td class="py-4 px-2 text-gray-900 dark:text-white">
+                        ₹{cuisine.price_full.toFixed(2)}
+                      </td>
+                      <td class="py-4 px-2">
+                        <span class={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                          cuisine.category === 'Veg' 
+                            ? 'bg-green-500/10 text-green-500 dark:bg-green-500/20 dark:text-green-400' 
+                            : cuisine.category === 'Non-Veg'
+                            ? 'bg-red-500/10 text-red-500 dark:bg-red-500/20 dark:text-red-400'
+                            : 'bg-yellow-500/10 text-yellow-600 dark:bg-yellow-500/20 dark:text-yellow-400'
+                        }`}>
+                          {cuisine.category}
+                        </span>
+                      </td>
+                    </tr>
+                  {/each}
+                {/if}
+              </tbody>
+            </table>
+          </div>
+        {/if}
+      </Card>
+
+    </div>
+  </div>
+</div>
+
+======================================================================
+
+Current create cuisine: 
+
+
+<script lang="ts">
+  import { Label, Input, Button, Card, Spinner, Radio } from "flowbite-svelte";
+  import { SearchOutline } from "flowbite-svelte-icons";
+  import { push } from "svelte-spa-router";
+  import { onMount } from 'svelte';
+  
+  import routesType from "../../config/backend_routes";
+  import { get } from 'svelte/store';
+  import { isAuthorized } from '../../stores/authStore.js';
+
+  let newCuisine = { cuisine_name: '', price_half: undefined, price_full: 0, category:"" };
+  let cuisines = [];
+  let loading = false;
+  let error = null;
+  let isSubmitting = false;
+  const dietaryOptions = ["Veg", "Non-Veg", "Egg"];
+  let searchCuisine = "";
+
+  async function fetchMyCuisines() {
+    loading = true;
+    error = null;
+    try {
+      const token = localStorage.getItem("jwt_token");
+      const response = await fetch(`${routesType.current_route}/cuisine/my-cuisines`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (!response.ok) {
+        throw new Error('Failed to fetch cuisines.');
+      }
+      cuisines = await response.json();
+      console.log(cuisines)
+    } catch (err) {
+      error = err.message;
+    } finally {
+      loading = false;
+    }
+  }
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    isSubmitting = true;
+    const token = localStorage.getItem("jwt_token");
+    
+    try {
+      const response = await fetch(`${routesType.current_route}/cuisine/register`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(newCuisine),
+        credentials: "include",
+      });
+      if (!response.ok) {
+        throw new Error('Failed to register cuisine');
+      }
+      
+      const addedCuisine = await response.json();
+      cuisines = [...cuisines, addedCuisine];
+      newCuisine = { cuisine_name: '', price_half: undefined, price_full: 0, category:"" };
+
+    } catch (err) {
+      error = err.message;
+      alert(`Error: ${error}`);
+    } finally {
+      isSubmitting = false;
+    }
+  };
+
+  onMount(() => {
+    if (get(isAuthorized)) {
+      fetchMyCuisines();
+    }
+  });
+
+  $: filteredCuisines = cuisines.filter(r =>
+    r.cuisine_name.toLowerCase().includes(searchCuisine.toLowerCase())
+  );
+
+
+</script>
+
+
+<!-- outer wrapper (keep your existing outer min-h-screen etc) -->
+<div class="min-h-screen bg-pink-50 dark:bg-slate-900 transition-colors duration-300 flex items-center justify-center py-2 px-2 sm:py-[5vh] sm:pb-[10vh] sm:px-[10vw]">
+
+  <!-- center & constrain width -->
+  <div class="w-full">
+    <div class="max-w-6xl mx-auto px-4 py-8">                  <!-- <-- center & constrain -->
+      <!-- two equal columns; auto-rows-fr ensures equal height cells -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 auto-rows-fr">
+        
+        <!-- Left column wrapper -->
+        <div class="w-full">
+          <Card class="p-8 bg-white dark:bg-slate-800 rounded-3xl shadow-xl border border-gray-200 dark:border-gray-700 h-full w-full max-w-none" >
+
+            <div class="flex flex-col items-center text-center mb-8">
+              <div class="w-20 h-20 mb-4 flex items-center justify-center text-6xl">
+                🍕
+              </div>
+              <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+                Add a new cuisine
+              </h1>
+              <p class="text-gray-500 dark:text-gray-400">
+                Fill in the details for your new dish.
+              </p>
+            </div>
+
+            <form onsubmit={handleSubmit} class="space-y-6">
+              <div class="space-y-2">
+                <Label for="cuisine_name" class="text-gray-700 dark:text-gray-300">
+                  Cuisine Name
+                </Label>
+                <Input 
+                  type="text" 
+                  name="cuisine_name" 
+                  id="cuisine_name" 
+                  bind:value={newCuisine.cuisine_name} 
+                  placeholder="e.g., Spicy Pizza" 
+                  required 
+                  class="bg-gray-100 dark:bg-gray-700"
+                />
+              </div>
+
+              <div class="space-y-2">
+                <Label for="price_half" class="text-gray-700 dark:text-gray-300">
+                  Half Price (₹)
+                </Label>
+                <Input 
+                  type="number" 
+                  name="price_half" 
+                  id="price_half" 
+                  bind:value={newCuisine.price_half} 
+                  placeholder="it can be empty" 
+                  step="1"
+                  class="bg-gray-100 dark:bg-gray-700"
+                />
+              </div>
+
+              <div class="space-y-2">
+                <Label for="price_full" class="text-gray-700 dark:text-gray-300">
+                  Full Price (₹)
+                </Label>
+                <Input 
+                  type="number" 
+                  name="price_full" 
+                  id="price_full" 
+                  bind:value={newCuisine.price_full} 
+                  placeholder="0" 
+                  step="1" 
+                  required 
+                  class="bg-gray-100 dark:bg-gray-700"
+                />
+              </div>
+
+              <div class="space-y-3">
+                <Label class="text-gray-700 dark:text-gray-300">Dietary Category</Label>
+                <div class="flex gap-3 bg-gray-100 dark:bg-gray-700 p-2 rounded-lg">
+                  {#each dietaryOptions as opt}
+                    <button
+                      type="button"
+                      onclick={() => newCuisine.category = opt}
+                      class={`flex-1 py-2.5 px-4 rounded-md text-sm font-medium transition-all duration-200 ${
+                        newCuisine.category === opt
+                          ? "bg-gradient-to-r from-red-500 to-orange-500 text-white shadow-lg"
+                          : "bg-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+                      }`}
+                    >
+                      {opt}
+                    </button>
+                  {/each}
+                </div>
+              </div>
+
+              <Button
+                type="submit"
+                class="w-full h-12 text-base font-semibold bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600"
+                disabled={isSubmitting}
+              >
+                {#if isSubmitting}
+                  Adding...
+                {:else}
+                  Add Cuisine
+                {/if}
+              </Button>
+            </form>
+          </Card>
+        </div>
+
+        <!-- Right column wrapper -->
+        <div class="w-full">
+          <Card class="p-8 bg-white dark:bg-slate-800 rounded-3xl shadow-xl border border-gray-200 dark:border-gray-700 h-full w-full max-w-none" >
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+              Your Current Existing Menu
+            </h2>
+            <!-- search bar:  -->
+            <div class="max-w-2xl mx-auto mb-12">
+              <div class="relative group">
+                <input
+                  type="text"
+                  bind:value={searchCuisine}
+                  placeholder="Search by cuisine..."
+                  class="w-full h-16 rounded-2xl border-2 border-gray-200 dark:border-gray-600 px-6 pl-16 text-lg bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm focus:ring-4 focus:ring-red-500/25 focus:border-red-500 dark:text-white transition-all duration-300 shadow-lg hover:shadow-xl group-hover:border-red-400"
+                />
+                <SearchOutline class="absolute left-5 top-5 text-gray-400 group-hover:text-red-500 transition-colors duration-300" size="lg" />
+                <div class="absolute right-4 top-3 bg-gradient-to-r from-red-500 to-orange-500 text-white px-4 py-2 rounded-xl text-sm font-medium shadow-lg">
+                  Search
+                </div>
+              </div>
+            </div>
+
+            {#if loading}
+              <div class="text-center py-8">
+                <Spinner size="8" color="red" />
+              </div>
+              {:else}
+                {#if filteredCuisines.length>0}
+                  <div class="mb-8">
+                    <div class="flex items-center justify-between mb-6">
+                      <h2 class="text-3xl font-bold text-gray-900 dark:text-white">
+                        {searchCuisine ? `Cuisine in "${searchCuisine}"` : 'All Cuisine'}
+                      </h2>
+                      <span class="bg-gradient-to-r from-red-500 to-orange-500 text-white px-4 py-2 rounded-full text-sm font-medium shadow-lg">
+                        {filteredCuisines.length} found
+                      </span>
+                    </div> 
+                  </div> 
+                {/if}
+                <div class="overflow-x-auto">
+                  <table class="w-full">
+                    <thead>
+                      <tr class="border-b border-gray-200 dark:border-gray-700">
+                        <th class="text-left py-3 px-2 text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                          Dish Name
+                        </th>
+                        <th class="text-left py-3 px-2 text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                          Half Price
+                        </th>
+                        <th class="text-left py-3 px-2 text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                          Full Price
+                        </th>
+                        <th class="text-left py-3 px-2 text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                          Category
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {#if cuisines.length === 0}
+                        <tr>
+                          <td colspan="4" class="text-center py-8 text-gray-500 dark:text-gray-400">
+                            You have no cuisines added yet.
+                          </td>
+                        </tr>
+                      {:else}
+                        {#each filteredCuisines as cuisine (cuisine.id)}
+                          <tr class="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                            <td class="py-4 px-2 text-gray-900 dark:text-white font-medium">
+                              {cuisine.cuisine_name}
+                            </td>
+                            <td class="py-4 px-2 text-gray-900 dark:text-white">
+                              {cuisine.price_half ? `₹${cuisine.price_half}` : '-'}
+                            </td>
+                            <td class="py-4 px-2 text-gray-900 dark:text-white">
+                              ₹{cuisine.price_full.toFixed(2)}
+                            </td>
+                            <td class="py-4 px-2">
+                              <span class={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                                cuisine.category === 'Veg' 
+                                  ? 'bg-green-500/10 text-green-500 dark:bg-green-500/20 dark:text-green-400' 
+                                  : cuisine.category === 'Non-Veg'
+                                  ? 'bg-red-500/10 text-red-500 dark:bg-red-500/20 dark:text-red-400'
+                                  : 'bg-yellow-500/10 text-yellow-600 dark:bg-yellow-500/20 dark:text-yellow-400'
+                              }`}>
+                                {cuisine.category}
+                              </span>
+                            </td>
+                          </tr>
+                        {/each}
+                      {/if}
+                    </tbody>
+                  </table>
+                </div>
+            {/if}
+          </Card>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+=================================================================
+
+
+edit details of restro: 
+
+
+<script>
+  import { onMount } from 'svelte';
+  import { link, push } from 'svelte-spa-router';
+  import { Card, Button, Input, Label, Spinner, Fileupload } from "flowbite-svelte";
+  import routesType from "../../config/backend_routes.js";
+
+  let loading = true;
+  let error = null;
+  let isUpdating = false;
+
+  // fetched state
+  let restaurant = {
+    id: null,
+    name: '',
+    location: '',
+    mobile_number: '',
+    support_email: '',
+    image_url: '',
+    status: 'Unknown'
+  };
+
+  // upload preview
+  let newImageFile = null;
+  let newImageUrl = '';
+
+  function handleImageChange(e) {
+    const f = e.target.files?.[0];
+    if (f) {
+      newImageFile = f;
+      newImageUrl = URL.createObjectURL(f);
+    } else {
+      newImageFile = null;
+      newImageUrl = '';
+    }
+  }
+
+  // fetch details
+  async function fetchRestaurantDetails() {
+    loading = true;
+    error = null;
+    try {
+      const token = localStorage.getItem('jwt_token');
+      const res = await fetch(`${routesType.current_route}/restaurant/me`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (!res.ok) {
+        throw new Error('Failed to fetch restaurant details.');
+      }
+      const data = await res.json();
+      restaurant = {
+        id: data.id,
+        name: data.name || '',
+        location: data.location || '',
+        mobile_number: data.mobile_number || '',
+        support_email: data.support_email || '',
+        image_url: data.image_url || '',
+        status: data.is_active ? 'Active' : 'Inactive'
+      };
+    } catch (err) {
+      error = err.message;
+    } finally {
+      loading = false;
+    }
+  }
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    isUpdating = true;
+    error = null;
+
+    try {
+      const token = localStorage.getItem('jwt_token');
+      const fd = new FormData();
+      fd.append('name', restaurant.name);
+      fd.append('location', restaurant.location);
+      fd.append('contact_no', restaurant.mobile_number);
+      fd.append('contact_email', restaurant.support_email);
+      if (newImageFile) fd.append('image', newImageFile);
+
+      const res = await fetch(`${routesType.current_route}/restaurant/update_details`, {
+        method: 'PATCH',
+        headers: {
+          Authorization: `Bearer ${token}`
+          // NOTE: do NOT set Content-Type for FormData
+        },
+        body: fd
+      });
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.detail || 'Failed to update details.');
+      }
+
+      const updated = await res.json();
+      // keep UI in sync
+      restaurant.name = updated.name || restaurant.name;
+      restaurant.location = updated.location || restaurant.location;
+      restaurant.image_url = updated.image_url || restaurant.image_url;
+      newImageFile = null;
+      newImageUrl = '';
+
+      alert('Details updated successfully!');
+    } catch (err) {
+      error = err.message;
+      console.error(err);
+      alert(`Update failed: ${error}`);
+    } finally {
+      isUpdating = false;
+    }
+  }
+
+  onMount(fetchRestaurantDetails);
+  
+</script>
+
+
+<!-- Header -->
+<div class=" bg-gray-900 p-2 md:p-2" >
+  <div class="max-w-6xl mx-auto space-y-4">
+  <a use:link href="/RCreateCuisine" class="inline-flex items-center text-sm text-gray-300 hover:text-white mb-2">← Back to Dashboard</a>
+  <!-- <a use:link href="/RCreateCuisine">home</a> -->
+  <h1 class="text-3xl md:text-4xl font-extrabold text-white">Edit Restaurant Details</h1>
+  <p class="text-gray-400 mt-1">Update your restaurant information and contact details</p>
+  </div>
+</div>
+
+<div class="min-h-screen bg-pink-50 dark:bg-slate-900 transition-colors duration-300 flex items-center justify-center py-2 px-2 sm:py-[2vh] sm:pb-[10vh] sm:px-[10vw]">
+  <div class="w-full">
+  <div class="max-w-6xl mx-auto px-4 py-2">
+
+    {#if loading}
+      <div class="flex justify-center py-12">
+        <Spinner size="8" color="red" />
+      </div>
+    {:else if error}
+      <Card class="bg-red-800 text-red-100">
+        <p class="font-semibold">Error</p>
+        <p>{error}</p>
+      </Card>
+    {:else}
+    
+      <!-- Top row: Image card (left) + Info card (right) -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 auto-rows-fr mb-6">
+
+         <div class="w-full">
+          <!-- Info Card -->
+           <Card class="p-8 bg-white dark:bg-slate-800 rounded-3xl shadow-xl border border-gray-200 dark:border-gray-700 h-full w-full max-w-none">
+             <div class="space-y-4">
+               <h3 class="text-lg font-semibold text-white">Restaurant Info</h3>
+   
+               <div class="bg-gray-800/40 rounded-lg p-4">
+                 <div class="text-sm text-gray-400">Current Name</div>
+                 <div class="text-white font-medium mt-1">{restaurant.name}</div>
+               </div>
+   
+               <div class="bg-gray-800/40 rounded-lg p-4">
+                 <div class="text-sm text-gray-400">Location</div>
+                 <div class="text-white font-medium mt-1">{restaurant.location}</div>
+               </div>
+   
+               <div class="bg-gray-800/40 rounded-lg p-4">
+                 <div class="text-sm text-gray-400">Status</div>
+                 <div class="text-green-400 font-semibold mt-1">{restaurant.status}</div>
+               </div>
+             </div>
+           </Card>
+         </div>
+
+          <div class="w-full">
+           <!-- <Card class="bg-gray-800 rounded-2xl p-6"> -->
+            <Card class="p-4 bg-white dark:bg-slate-800 rounded-3xl shadow-xl border border-gray-200 dark:border-gray-700 h-full w-full max-w-none" >
+             <div class="flex flex-col items-center">
+               <div class="w-40 h-40 rounded-lg overflow-hidden bg-gray-700 ring-1 ring-gray-700 flex items-center justify-center mb-4">
+                 <img src={newImageUrl || restaurant.image_url || 'https://via.placeholder.com/300x300?text=No+Image'} alt="restaurant" class="object-cover w-full h-full"/>
+               </div>
+
+            <div class="flex flex-col items-center mb-6">
+              <h2 class="text-xl font-bold mb-4 text-gray-900 dark:text-white">Restaurant Image</h2>
+              <p class="text-sm text-gray-400 mb-4">Upload your restaurant's logo or photo</p>
+              <Fileupload onchange={handleImageChange} accept="image/*" placeholder="select here" />
+            </div>
+
+             </div>
+           </Card>
+         </div>
+
+      </div>
+
+      <!-- Bottom: Contact & Location Details (spanning full width) -->
+       <div class="grid grid-cols-1 lg:grid-cols-1 gap-8 auto-rows-fr">
+        <div class="w-full">
+      <Card class="p-8 bg-white dark:bg-slate-800 rounded-3xl shadow-xl border border-gray-200 dark:border-gray-700 h-full w-full max-w-none">
+        <div class="mb-4">
+          <h2 class="text-xl font-semibold text-white">Contact & Location Details</h2>
+          <p class="text-gray-400">Update your restaurant's contact information</p>
+        </div>
+
+        <form on:submit|preventDefault={handleSubmit} class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Left column -->
+          <div class="space-y-4">
+            <div>
+              <Label class="text-sm text-gray-300">Restaurant Name</Label>
+              <Input type="text" bind:value={restaurant.name} class="mt-2 bg-gray-700/60 text-white" required />
+            </div>
+
+            <div>
+              <Label class="text-sm text-gray-300">Mobile Number</Label>
+              <Input type="tel" bind:value={restaurant.mobile_number} class="mt-2 bg-gray-700/60 text-white" required />
+            </div>
+          </div>
+
+          <!-- Right column -->
+          <div class="space-y-4">
+            <div>
+              <Label class="text-sm text-gray-300">Location</Label>
+              <Input type="text" bind:value={restaurant.location} class="mt-2 bg-gray-700/60 text-white" required />
+            </div>
+
+            <div>
+              <Label class="text-sm text-gray-300">Support Email</Label>
+              <Input type="email" bind:value={restaurant.support_email} class="mt-2 bg-gray-700/60 text-white" required />
+            </div>
+          </div>
+
+          <!-- full-width actions row (span across both columns) -->
+          <div class="md:col-span-2 flex items-center justify-end gap-4 mt-2">
+            <button type="button" class="px-4 py-2 rounded-lg border border-gray-700 text-gray-300 hover:bg-gray-700/50">Cancel</button>
+
+            <button type="submit" class="px-6 py-3 rounded-lg bg-gradient-to-r from-orange-500 to-red-500 text-white font-semibold shadow hover:opacity-95 disabled:opacity-60"
+              disabled={isUpdating}>
+              {#if isUpdating}Saving...{:else}Save Changes{/if}
+            </button>
+          </div>
+        </form>
+      </Card>
+      </div>
+      </div>
+    {/if}
+  </div>
+  </div>
+</div>
+
+====================================================
+
+restro status control:
+
+<script>
+  import { onMount } from 'svelte';
+  import { push } from 'svelte-spa-router';
+  import { Card, Button, Badge, Spinner, Label, Toggle } from "flowbite-svelte";
+  import { ArrowLeftOutline, CookieSolid, TruckSolid, BuildingSolid, UserSettingsSolid, ClockOutline, FireSolid, AnnotationSolid } from "flowbite-svelte-icons";
+  import routesType from "../../config/backend_routes.js";
+
+  // --- STATE ---
+  let restaurant = {
+    name: 'Loading...',
+    operating_status: 'Loading...',
+    kitchen_status: 'Loading...',
+    delivery_status: 'Loading...',
+  };
+
+  let loading = true;
+  let isUpdating = false;
+  let errorMessage=''
+  
+  // TOAST STATE: Controlled by API responses
+  let lastUpdateMessage = '';
+  let lastUpdateType = 'default'; // 'default' (blue/active), 'destructive' (red/inactive)
+
+
+  // --- OPTIONS ---
+  const kitchenOptions = ["Normal", "Busy", "Emergency"];
+  
+  // --- DERIVED STATE (for binding and display) ---
+  $: isOpen = restaurant.operating_status === 'Open';
+  $: deliveryActive = restaurant.delivery_status === 'Active';
+  $: kitchenStatus = restaurant.kitchen_status; // Used for visual comparison in the template
+
+
+  // --- HELPERS ---
+  function getBadgeColor(status) {
+    status = status.toLowerCase();
+    if (status === 'open' || status === 'active' || status === 'normal') return 'green';
+    if (status === 'busy') return 'yellow';
+    if (status === 'closed' || status === 'emergency' || status === 'inactive') return 'red';
+    return 'gray';
+  }
+
+  // --- API CALLS ---
+  async function fetchCurrentStatus() {
+    loading = true;
+    errorMessage = '';
+    try {
+      const token = localStorage.getItem('jwt_token');
+      const response = await fetch(`${routesType.current_route}/restaurant/me`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (!response.ok) throw new Error('Failed to fetch restaurant status.');
+      
+      const data = await response.json();
+      // Ensure local state is updated with database values
+      restaurant = {
+        operating_status: data.operating_status,
+        kitchen_status: data.kitchen_status,
+        delivery_status: data.delivery_status,
+        name: data.name,
+      };
+
+    } catch (err) {
+      // ... (error handling)
+    } finally {
+      loading = false;
+    }
+  }
+
+  async function updateStatus(field, newValue) {
+    // Only update if the value is actually changing
+    if (restaurant[field] === newValue) return;
+
+    isUpdating = true;
+    lastUpdateMessage = '';
+    
+    try {
+      const token = localStorage.getItem('jwt_token');
+      const payload = { [field]: newValue };
+
+      const response = await fetch(`${routesType.current_route}/restaurant/status`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(payload)
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.detail || 'Failed to update status.');
+      }
+      
+      const updatedRestaurant = await response.json();
+      
+      // Update the local state
+      restaurant[field] = newValue;
+
+      // Set TOAST message and type
+      lastUpdateMessage = `${field.replace('_', ' ')} updated to ${newValue.toUpperCase()}!`;
+      
+      if (field === 'operating_status' || field === 'delivery_status') {
+          // Toggles use red for CLOSED/INACTIVE (destructive) and blue for OPEN/ACTIVE (default)
+          lastUpdateType = newValue.toLowerCase() === 'open' || newValue.toLowerCase() === 'active' ? 'default' : 'destructive';
+      } else {
+          // Kitchen uses default (blue) for any change
+          lastUpdateType = 'default';
+      }
+
+
+    } catch (err) {
+      lastUpdateMessage = `Update failed: ${err.message}`;
+      lastUpdateType = 'destructive';
+    } finally {
+      isUpdating = false;
+    }
+  }
+  
+  // --- HANDLERS (Mirroring React's onChange/onClick) ---
+
+  const handleOperatingHoursChange = (e) => {
+    const checked = e.target.checked;
+    const newStatus = checked ? 'Open' : 'Closed';
+    updateStatus('operating_status', newStatus);
+  };
+  
+  const handleDeliveryChange = (e) => {
+    const checked = e.target.checked;
+    const newStatus = checked ? 'Active' : 'Inactive';
+    updateStatus('delivery_status', newStatus);
+  };
+
+  const handleKitchenStatusChange = (status) => {
+    updateStatus('kitchen_status', status);
+  };
+
+  onMount(fetchCurrentStatus);
+</script>
+
+
+<div class=" dark:bg-slate-900 transition-colors duration-300 py-6">
+  <div class="max-w-xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-center gap-2 mb-8">
+      <h1 class="text-3xl font-extrabold text-red-500 text-center">
+        {restaurant.name} 
+      </h1>
+      <span class="text-3xl font-extrabold text-center" >
+        Status Control
+      </span>
+      <UserSettingsSolid class="h-6 w-6 text-orange-500 animate-spin " style="animation-duration: 8s;" />
+    </div>
+    <p class="dark:text-slate-400 text-center mb-6">Instantly update your restaurant's operational status and availability.</p>
+  </div>
+</div>
+
+<div class="min-h-screen bg-pink-50 dark:bg-slate-900 transition-colors duration-300 flex items-center justify-center py-2 px-2 sm:py-[2vh] sm:pb-[10vh] sm:px-[10vw]" >
+  <div class="w-full">
+    <div class=" mx-auto px-4 py-2">
+
+    {#if lastUpdateMessage}
+      <div 
+        class="p-4 rounded-lg text-center font-semibold mb-6 transition-all duration-300"
+        class:bg-blue-600={lastUpdateType === 'default'} 
+        class:bg-red-600={lastUpdateType === 'destructive'} 
+        class:text-white={true} >
+        {lastUpdateMessage}
+      </div>
+    {/if}
+
+    {#if loading}
+      <div class="flex justify-center py-12"><Spinner size="8" color="red" />
+      </div>
+    {:else}
+
+    <div class="grid grid-cols-1 lg:grid-cols-1 gap-8 auto-rows-fr" >
+      <div class="w-full ">
+        <Card class="p-8 bg-white dark:bg-slate-900 rounded-3xl shadow-xl border border-gray-200 dark:border-gray-700 h-full w-full max-w-none" >
+          <h1 class=" text-4xl font-extrabold " >Change your restaurant status</h1>
+          <p class="dark:text-slate-400 text-base" >Control all operational aspects of your restaurant</p>
+
+          <div class="p-4 rounded-xl dark:bg-[#182338] dark:hover:bg-[#1a273e] transition-all duration-300 group border border-slate-600">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <BuildingSolid class="w-6 h-6 text-red-500" />
+                <div>
+                  <Label for="operating-hours" class="text-lg  dark:font-bold font-extrabold dark:text-white text-green-600 ">Operating Hours</Label>
+                  <p class="text-sm dark:text-slate-400">Toggle your restaurant status</p>
+                </div>
+              </div>
+              <Toggle id="operating-hours" checked={isOpen} onchange={handleOperatingHoursChange} disabled={isUpdating} class="scale-125" />
+            </div>
+            <div class="flex gap-4 mt-3 pl-10">
+              <Badge color={isOpen ? 'green' : 'gray'}>Open</Badge>
+              <Badge color={!isOpen ? 'red' : 'gray'}>Closed</Badge>
+            </div>
+          </div>
+
+          <div class="p-4 rounded-xl dark:bg-[#182338] dark:hover:bg-[#1a273e] transition-all duration-300 border border-slate-600">
+            <div class="flex items-center gap-3 mb-4">
+              <CookieSolid class="w-6 h-6 text-yellow-500" />
+              <div>
+                <h3 class="text-lg dark:font-bold font-extrabold text-red-500 dark:text-white">Kitchen Status</h3>
+                <p class="text-sm dark:text-slate-400">Set your kitchen's current workload</p>
+              </div>
+            </div>
+            <div class="flex gap-3 ml-[45px] flex-wrap">
+              {#each kitchenOptions as option}
+                <Button size="sm" 
+                    onclick={() => handleKitchenStatusChange(option)}
+                    disabled={isUpdating}
+                    class="flex-1 min-w-[100px] transition-all duration-200 text-sm font-medium rounded-lg shadow-md {
+                      kitchenStatus.toLowerCase() === option.toLowerCase()
+                        ? 'bg-orange-600 text-white hover:bg-orange-700 scale-105 dark:bg-green-600 dark:text-white dark:hover:bg-green-700 dark:scale-105'
+                        : ' bg-gray-200 text-gray-900 hover:bg-gray-300 dark:bg-slate-600 dark:text-slate-300 dark:hover:bg-slate-500'
+                    }" >
+                    {#if option === 'Emergency'}
+                      <AnnotationSolid class="h-4 w-4 mr-1" />
+                    {/if}
+                    {option}
+                </Button>
+              {/each}
+            </div>
+          </div>
+
+          <div class="p-4 rounded-xl dark:bg-[#182338] dark:hover:bg-[#1a273e] transition-all duration-300 border border-slate-600">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <TruckSolid class="w-6 h-6 text-blue-500" />
+                <div>
+                  <Label for="delivery-status" class="text-lg fdark:font-bold font-extrabold text-blue-500 dark:text-white">Delivery Status</Label>
+                  <p class="text-sm text-slate-400">Enable or disable delivery service</p>
+                </div>
+              </div>
+              <Toggle id="delivery-status" checked={deliveryActive} onchange={handleDeliveryChange} disabled={isUpdating} class="scale-125" />
+            </div>
+            <div class="flex gap-4 mt-3 pl-10">
+              <Badge color={deliveryActive ? 'blue' : 'gray'}>Active</Badge>
+              <Badge color={!deliveryActive ? 'red' : 'gray'}>Inactive</Badge>
+            </div>
+          </div>
+
+        </Card>
+      </div>
+    
+    </div>
+
+    <div class=" grid grid-cols-1 lg:grid-cols-3 gap-8 auto-rows-fr my-6">
+
+        <div class="w-full">
+          <Card class="text-center bg-white dark:bg-slate-800/80 hover:shadow-lg transition-all duration-300 hover:scale-105 border-none w-[100%] ">
+          <div class="p-3">
+            <div class={`text-2xl font-bold ${isOpen ? 'text-green-500' : 'text-red-500'}`}>
+              {isOpen ? 'OPEN' : 'CLOSED'}
+            </div>
+            <div class="text-xs text-slate-400">Restaurant</div>
+          </div>
+        </Card>
+        </div>
+
+
+        <div class="w-full">
+        
+        <Card class="text-center bg-white dark:bg-slate-800/80 hover:shadow-lg transition-all duration-300 hover:scale-105 border-none w-[100%] ">
+          <div class="p-3">
+            <div class="text-2xl font-bold text-yellow-500">
+              {kitchenStatus.toUpperCase()}
+            </div>
+            <div class="text-xs text-slate-400">Kitchen</div>
+          </div>
+        </Card>
+
+        </div>
+
+        <div class="w-full">
+        
+        <Card class="text-center bg-white dark:bg-slate-800/80 hover:shadow-lg transition-all duration-300 hover:scale-105 border-none w-[100%] ">
+          <div class="p-3">
+            <div class={`text-2xl font-bold ${deliveryActive ? 'text-blue-500' : 'text-slate-400'}`}>
+              {deliveryActive ? 'ON' : 'OFF'}
+            </div>
+            <div class="text-xs text-slate-400">Delivery</div>
+          </div>
+        </Card>
+
+        </div>
+
+
+    </div>
+    {/if}
+
+</div>
+</div>
+</div>
+
+
+
+

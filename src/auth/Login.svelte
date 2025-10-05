@@ -4,11 +4,11 @@
   import { Button, Input, Label, Checkbox, Helper } from "flowbite-svelte";
   import { push } from "svelte-spa-router";
   import { link } from "svelte-spa-router";
-  import Error from "../components/Card/AuthCard.svelte";
+  import AuthMessage from "../components/Card/AuthCard.svelte";
   import burger from "../assets/icons/burger.png";
 
-  let showError = $state(false);
-  let errorMessage = $state("");
+  let showAuthMessage = $state(false);
+  let authMessage = $state("");
   let iconType = $state();
   let isRestaurant = $state(false);
   let isDarkMode = $state(false);
@@ -30,13 +30,13 @@
     const result = await login(loginData);
 
     if (result.success) {
-      errorMessage = result.message;
-      showError = true;
+      authMessage = result.message;
+      showAuthMessage = true;
       iconType = "loginSuccess";
       setTimeout(() => push("/protectedHome"), 700);
     } else {
-      errorMessage = result.message;
-      showError = true;
+      authMessage = result.message;
+      showAuthMessage = true;
       iconType = "wrongDetails";
       setTimeout(() => push("/register"), 700);
     }
@@ -232,9 +232,9 @@
   </div>
 
   <!-- Error Modal -->
-  {#if showError}
+  {#if showAuthMessage}
     <div class="fixed inset-0 flex items-center justify-center z-50 bg-black/60 dark:bg-black/80 backdrop-blur-md p-4 transition-all duration-300">
-      <Error {errorMessage} {iconType} />
+      <AuthMessage {authMessage} {iconType} />
     </div>
   {/if}
 </div>

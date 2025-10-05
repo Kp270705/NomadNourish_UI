@@ -24,6 +24,7 @@ export const restaurant = writable({
   location: '',
   mobile_number: '',
   image_url: '',
+  support_email:'',
   gstIN: ''
 });
 
@@ -46,7 +47,6 @@ export async function checkAuth() {
     const decodedToken = jwtDecode(token);
     const currentTime = Date.now() / 1000; // in seconds
 
-
     if (decodedToken.exp < currentTime) {
 
       console.warn("❌ Token expired. Clearing local storage.");
@@ -65,14 +65,14 @@ export async function checkAuth() {
     userType.set(localStorage.getItem("user_type"));
 
     const user_type = localStorage.getItem("user_type");
-
     if (user_type === 'restaurant') {
       restaurant.set({
-        name: userDetails[0],
-        location: userDetails[1],
-        mobile_number: userDetails[2],
-        image_url: userDetails[3],
-        gstIN: userDetails[4]
+        name: userDetails.name,
+        location: userDetails.location,
+        mobile_number: userDetails.mobile_number,
+        image_url: userDetails.image_url,
+        support_email:userDetails.support_email,
+        gstIN: userDetails.gstIN,
       });
     }
 
@@ -134,23 +134,24 @@ export async function login(formData) {
       console.log("User details received:", userDetails);
       console.log("User name received:", userDetails[0]);
 
-      if (user_type === 'restaurant') {
-        restaurant.set({
-          name: userDetails[0],
-          location: userDetails[1],
-          mobile_number: userDetails[2],
-          image_url: userDetails[3],
-          gstIN: userDetails[4]
-        });
-      }
+      // if (user_type === 'restaurant') {
+      //   restaurant.set({
+      //     name: userDetails.name,
+      //     location: userDetails.location,
+      //     mobile_number: userDetails.mobile_number,
+      //     image_url: userDetails.image_url,
+      //     support_email:userDetails.support_email,
+      //     gstIN: userDetails.gstIN,
+      //   });
+      // }
 
-      if (user_type === 'user') {
-        user.set({
-          name: userDetails[0],
-          email: userDetails[1],
-          image_url: userDetails[2],
-        });
-      }
+      // if (user_type === 'user') {
+      //   user.set({
+      //     name: userDetails[0],
+      //     email: userDetails[1],
+      //     image_url: userDetails[2],
+      //   });
+      // }
 
       await checkAuth(); // Update the global state
       return { 
@@ -159,6 +160,7 @@ export async function login(formData) {
         message: data.message,
         user:data.user_type, 
       };
+
     } else {
       // Return error details for UI handling
       return { 

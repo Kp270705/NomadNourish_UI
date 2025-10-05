@@ -198,9 +198,16 @@
                   <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">
                     {cuisine.cuisine_name}
                   </h3>
+                  {#if cuisine.half_price }
                   <div class="flex items-center gap-2 mb-4">
                     <div class="text-3xl font-bold text-gray-900 dark:text-white">
-                      ₹{cuisine.cuisine_price.toFixed(2)}
+                      Half Price: ₹{cuisine.price_half}
+                    </div>
+                  </div>
+                  {/if}
+                  <div class="flex items-center gap-2 mb-4">
+                    <div class="text-3xl font-bold text-gray-900 dark:text-white">
+                      Full Price: ₹{cuisine.price_full.toFixed(2)}
                     </div>
                   </div>
                 </div>

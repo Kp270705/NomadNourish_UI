@@ -57,7 +57,8 @@
         },
         body: JSON.stringify({
             cuisine_name: editingCuisine.cuisine_name,
-            cuisine_price: parseFloat(editingCuisine.cuisine_price)
+            price_half: parseFloat(editingCuisine.price_half),
+            price_full: parseFloat(editingCuisine.price_full),
         })
       });
       if (!response.ok) {
@@ -130,9 +131,22 @@
               <h3 class="text-xl font-bold text-gray-900 dark:text-white truncate">
                 {cuisine.cuisine_name}
               </h3>
-              <p class="text-lg text-gray-600 dark:text-gray-400 mt-1">
-                ₹{cuisine.cuisine_price.toFixed(2)}
-              </p>
+              <div class="flex items-center gap-8 justify-center ">
+                <div>
+                  {#if cuisine.price_half}
+                  <h1 class=" font-bold text-xl text-amber-200 " >Half Price</h1>
+                  <p class="text-lg text-gray-600 dark:text-gray-400 mt-1">
+                    ₹{cuisine.price_half}
+                  </p>
+                  {/if}
+                </div>
+                <div>
+                  <h1 class=" font-bold text-xl text-amber-200 " >Full Price</h1>
+                  <p class="text-lg text-gray-600 dark:text-gray-400 mt-1">
+                    ₹{cuisine.price_full}
+                  </p>
+                </div>
+              </div>
             </div>
             <div class="flex items-center gap-2">
               <Button onclick={() => openEditModal(cuisine)} color="yellow">
@@ -159,11 +173,15 @@
         <div class="space-y-4 p-4">
             <Label>
                 Cuisine Name
-                <Input type="text" bind:value={editingCuisine.cuisine_name} required/>
+                <Input type="text" bind:value={editingCuisine.cuisine_name}/>
             </Label>
             <Label>
-                Cuisine Price
-                <Input type="number" bind:value={editingCuisine.cuisine_price} step="0.01" required/>
+                Half Price
+                <Input type="number" bind:value={editingCuisine.price_half} step="0.01"/>
+            </Label>
+            <Label>
+                Full Price
+                <Input type="number" bind:value={editingCuisine.price_full} step="0.01"/>
             </Label>
         </div>
         <div class="flex justify-end p-4 border-t dark:border-gray-700">

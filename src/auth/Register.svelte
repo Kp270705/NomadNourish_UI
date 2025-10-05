@@ -216,6 +216,22 @@
                   </Label>
                   <Input type="text" name="gstIN" id="gstIN" placeholder="22AAAAA0000A1Z5" required />
                 </div>
+                <div>
+                  <Label for="support_email" class="text-sm font-semibold text-gray-700 dark:text-gray-200 flex items-center space-x-2 mb-1">
+                    <span class="text-blue-500 dark:text-blue-400">📧</span>
+                    <span>Support Email (For Customers)</span>
+                  </Label>
+                  <Input type="email" name="support_email" id="support_email" placeholder="support@yourrestaurant.com" required />
+                </div>
+
+                <!-- <div class="space-y-2">
+                  <Label class="text-sm font-semibold text-gray-700 dark:text-gray-200 flex items-center space-x-2">
+                    <span class="text-blue-500 dark:text-blue-400">📧</span>
+                    <span>Support Email (For Customers)</span>
+                  </Label>
+                  <input type="email" name="support_email" placeholder="support@yourrestaurant.com" class="..." required />
+                </div> -->
+
               </div>
             {:else}
               <div class="space-y-4">
