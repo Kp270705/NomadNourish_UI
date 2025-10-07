@@ -45,29 +45,11 @@
 
 </script>
 
-<div class="group">
-  <Card class="relative flex flex-col items-center justify-between rounded-3xl p-8 {cardStyle} border overflow-hidden">
+<div class="group w-96">
+  <Card class="relative flex flex-col items-center justify-between rounded-3xl p-8 {cardStyle} border overflow-hidden h-full">
     
     <!-- Gradient Overlay -->
     <div class="absolute inset-0 bg-gradient-to-br {change_card_hover} transition-opacity duration-500 pointer-events-none"></div>
-    
-    <!-- Menu Dots use in future -->
-    <!-- <div class="flex justify-end w-full relative z-10">
-      <button class="p-2 rounded-full bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 hover:bg-white dark:hover:bg-gray-700">
-        <DotsHorizontalOutline class="text-gray-600 dark:text-gray-400 hover:text-red-500" />
-      </button>
-      <Dropdown class="w-40 mt-2">
-        <DropdownItem class="hover:bg-red-50 dark:hover:bg-red-900/20">
-          <span class="text-gray-700 dark:text-gray-300">Edit</span>
-        </DropdownItem>
-        <DropdownItem class="hover:bg-blue-50 dark:hover:bg-blue-900/20">
-          <span class="text-gray-700 dark:text-gray-300">Export data</span>
-        </DropdownItem>
-        <DropdownItem class="hover:bg-red-50 dark:hover:bg-red-900/20">
-          <span class="text-red-600 dark:text-red-400">Delete</span>
-        </DropdownItem>
-      </Dropdown>
-    </div> -->
 
     <!-- Restaurant Avatar with Glow Effect -->
     <div class="flex justify-center mb-6 relative z-10">
@@ -82,15 +64,15 @@
     </div>
 
     <!-- Restaurant Info -->
-    <div class="text-center mb-6 relative z-10">
+    <div class="text-center mb-6 relative z-10 w-full">
       <h3 class="text-2xl font-bold {name_decor} transition-colors duration-300">
         {restaurant.name}
       </h3>
       
       <!-- Location with Icon -->
-      <div class="flex items-center justify-center text-gray-600 dark:text-gray-400 mb-3">
-        <MapPinOutline class="mr-2 text-red-500" size="sm" />
-        <span class="text-lg">{restaurant.location}</span>
+      <div class="flex items-center justify-center text-gray-600 dark:text-gray-400 mb-3 min-h-[4rem]">
+        <MapPinOutline class="mr-2 text-red-500 flex-shrink-0" size="sm" />
+        <span class="text-lg line-clamp-2">{restaurant.location}</span>
       </div>
 
       <div class="inline-block {traffic_design} px-4 py-2 rounded-full font-bold mb-4 border border-indigo-200 dark:border-indigo-700">

@@ -27,9 +27,8 @@
   import Test from '../pages/Test.svelte';
   import RStatus from '../pages/Restaurants/R_Status.svelte';
   import RTest from '../pages/Restaurants/R_Test.svelte';
+  import RTest2 from '../pages/Restaurants/R_Test2.svelte';
 
-  // import Test1 from '../ui_Test/Test1.svelte';
-  // import Test2 from '../ui_Test/Test2.svelte';
 
   // export let isLogin
   const routes = {
@@ -58,11 +57,10 @@
     '/ROrderHistory': ROrderHistory,
     '/RStatus': RStatus,
     '/RTest': RTest,
-    
-
-
+    '/RTest2': RTest2,
 
   };
+
 </script>
 
 

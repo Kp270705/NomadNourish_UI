@@ -1,9 +1,11 @@
 <script>
   import { onMount } from 'svelte';
-  import { push } from 'svelte-spa-router';
+  import { push, link } from 'svelte-spa-router';
   import { Card, Button, Badge, Spinner, Label, Toggle } from "flowbite-svelte";
-  import { ArrowLeftOutline, CookieSolid, TruckSolid, BuildingSolid, UserSettingsSolid, ClockOutline, FireSolid, AnnotationSolid } from "flowbite-svelte-icons";
+  import { ArrowLeftOutline, CookieSolid, TruckSolid, BuildingSolid, CirclePlusSolid, AnnotationSolid } from "flowbite-svelte-icons";
   import routesType from "../../config/backend_routes.js";
+  import Move from '../../utils/moveOsc.js';
+  import HeaderAlongNav from '../../components/header/HeaderAlongNav.svelte';
 
   // --- STATE ---
   let restaurant = {
@@ -16,6 +18,7 @@
   let loading = true;
   let isUpdating = false;
   let errorMessage=''
+  let headerRoute = false
   
   // TOAST STATE: Controlled by API responses
   let lastUpdateMessage = '';
@@ -135,28 +138,37 @@
     updateStatus('kitchen_status', status);
   };
 
+  async function navBack() {
+    const mvObj = new Move();
+    let nvb = mvObj.goBack() 
+    return nvb
+      
+  }
+
   onMount(fetchCurrentStatus);
 </script>
 
 
-<div class=" dark:bg-slate-900 transition-colors duration-300 py-6">
-  <div class="max-w-xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="flex items-center justify-center gap-2 mb-8">
-      <h1 class="text-3xl font-extrabold text-red-500 text-center">
-        {restaurant.name} 
-      </h1>
-      <span class="text-3xl font-extrabold text-center" >
-        Status Control
-      </span>
-      <UserSettingsSolid class="h-6 w-6 text-orange-500 animate-spin " style="animation-duration: 8s;" />
-    </div>
-    <p class="dark:text-slate-400 text-center mb-6">Instantly update your restaurant's operational status and availability.</p>
-  </div>
-</div>
+<div class="min-h-screen bg-white dark:bg-gray-900 transition-colors duration-300 py-12" >
+  <div class=" max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 " >
 
-<div class="min-h-screen bg-[linear-gradient(150deg,rgb(255, 255, 204),rgb(255, 242, 230),rgb(255, 206, 153))] dark:bg-slate-900 transition-colors duration-300 flex items-start justify-center py-2 px-2 sm:py-[2vh] sm:pb-[10vh] sm:px-[10vw]" >
-  <div class="w-[70%]">
-    <div class=" mx-auto px-4 py-2">
+    <!-- Intro: -->
+    <!-- <div class="relative pt-12 pb-8 text-center">
+      <Button 
+          onclick={navBack} 
+          class="absolute top-0 left-0 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white" >
+          <ArrowLeftOutline class="w-5 h-5 mr-2" /> Back
+      </Button>
+
+      <h1 class="text-4xl font-extrabold text-orange-500">
+        Edit Your Status
+      </h1> 
+    </div> -->
+
+    <HeaderAlongNav heading="Edit your status" route={headerRoute} routeName="None" routeLink="none" />
+    
+    <!-- Main content:  -->
+    <div class=" mx-auto px-4 py-2 w-[70%] ">
 
       {#if lastUpdateMessage}
         <div 

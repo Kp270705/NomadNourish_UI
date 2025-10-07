@@ -4,6 +4,7 @@
   import { PenSolid, TrashBinOutline, CirclePlusSolid, ArrowLeftOutline } from "flowbite-svelte-icons";
   import routesType from "../../config/backend_routes.js";
   import { link, push } from 'svelte-spa-router';
+  import HeaderAlongNav from '../../components/header/HeaderAlongNav.svelte';
 
   // State variables
   let cuisines = [];
@@ -15,6 +16,7 @@
   let showDeleteModal = false;
   let editingCuisine = null;
   let cuisineToDelete = null;
+  let headerRoute = true
 
   // --- Fetching Cuisines ---
   async function fetchMyCuisines() {
@@ -99,56 +101,68 @@
 
 </script>
 
-<div class="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300 py-12">
-  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="flex items-center justify-between mb-8 gap-4">
-      <Button onclick={() => push('/RHome')} class="bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white">
-        <ArrowLeftOutline class="w-5 h-5 mr-2" /> Back
-      </Button>
-      <h1 class="text-4xl font-extrabold text-gray-900 dark:text-white text-center sm:text-left">
-        Manage Your Menu
-      </h1>
-      <a use:link href="/RCreateCuisine" class="w-auto">
-        <Button class="bg-red-500 hover:bg-red-600 font-bold">
-          <!-- <PlusSolid class="w-5 h-5 mr-2"/> -->
-           <CirclePlusSolid class="shrink-0 h-6 w-6" />
-          Add New
-        </Button>
-      </a>
-    </div>
+<div class="min-h-screen bg-white dark:bg-gray-900 transition-colors duration-300 py-12">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+    <!-- top -->
+    <HeaderAlongNav heading="Edit your cuisine" route={headerRoute} routeName="Add cuisine" routeLink="/RCreateCuisine" />
 
     {#if loading}
       <div class="text-center py-10">
         <Spinner size="8" color="red" />
       </div>
     {:else if error}
-      <p class="text-red-500 text-center">{error}</p>
+
+      <!-- skeleton -->
+      <div class=" grid grid-cols-1 md:grid-cols-2 lg:grid-cols-9 gap-6 max-w-6xl mx-auto" >
+
+        {#each {length: 12} as _, i}
+          <div role="status" class="lg:col-span-3 space-y-7 h-70 bg-[#f1f1f2] rounded-lg animate-pulse dark:bg-[#0e1930] "> 
+          </div> 
+        {/each}
+
+      </div>
+
+        
+      <!-- </div> -->
     {:else if cuisines.length > 0}
-      <div class="space-y-4">
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-9 gap-6 max-w-6xl mx-auto" >
         {#each cuisines as cuisine (cuisine.id)}
-          <Card class="flex items-center justify-between p-4 shadow-lg rounded-lg bg-white dark:bg-gray-800">
-            <div class="flex-1 min-w-0 pr-4">
+          <Card class=" border-border/50 hover:border-primary/50 transition-all duration-300 hover:shadow-lg animate-fade-in
+
+           bg-gray-100 dark:bg-[#131c30] border-gray-300 dark:hover:border-red-400 
+           lg:col-span-3 justify-self-center py-5 space-y-7  ">
+
+            <!-- name  -->
+            <div class="flex items-center justify-center " >
               <h3 class="text-xl font-bold text-gray-900 dark:text-white truncate">
                 {cuisine.cuisine_name}
               </h3>
-              <div class="flex items-center gap-8 justify-center ">
+            </div>
+            
+            <!-- price -->
+            <div class="flex items-center gap-8 justify-center ">
+              {#if cuisine.price_half}
                 <div>
-                  {#if cuisine.price_half}
-                  <h1 class=" font-bold text-xl text-amber-200 " >Half Price</h1>
-                  <p class="text-lg text-gray-600 dark:text-gray-400 mt-1">
+                  <h1 class=" font-bold text-xl text-amber-400 dark:text-amber-200 " >Half Price</h1>
+                  <p class="text-lg text-gray-600 dark:text-gray-400 mt-1 flex items-center justify-center ">
                     ₹{cuisine.price_half}
                   </p>
-                  {/if}
                 </div>
-                <div>
-                  <h1 class=" font-bold text-xl text-amber-200 " >Full Price</h1>
-                  <p class="text-lg text-gray-600 dark:text-gray-400 mt-1">
-                    ₹{cuisine.price_full}
-                  </p>
-                </div>
+              {/if}
+
+              <div>
+                <h1 class=" font-bold text-xl text-amber-400 dark:text-amber-200 " >Full Price</h1>
+                <p class="text-lg text-gray-600 dark:text-gray-400 mt-1 flex items-center justify-center">
+                  ₹{cuisine.price_full}
+                </p>
               </div>
+
             </div>
-            <div class="flex items-center gap-2">
+
+            <!-- buttons -->
+            <div class="flex items-center gap-6 justify-center">
               <Button onclick={() => openEditModal(cuisine)} color="yellow">
                  <PenSolid class="shrink-0 h-6 w-6" />
               </Button>
@@ -156,9 +170,11 @@
                 <TrashBinOutline class="w-5 h-5"/>
               </Button>
             </div>
+
           </Card>
         {/each}
       </div>
+
     {:else}
       <p class="text-center text-gray-600 dark:text-gray-400">
         You have no cuisines added yet.

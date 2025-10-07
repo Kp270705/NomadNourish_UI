@@ -106,6 +106,8 @@
 
 <!-- <div class="min-h-screen bg-white dark:bg-gray-900 transition-colors duration-300"> -->
 <div class="min-h-screen bg-white dark:bg-gradient-to-r from-green-900 via-yellow-900 to-orange-900 transition-colors duration-300">
+
+  <!-- hotel info  -->
   <div class="relative overflow-hidden bg-gradient-to-r from-red-600 via-orange-600 to-yellow-600 dark:from-red-800 dark:via-orange-800 dark:to-yellow-800">
     <div class="absolute inset-0 bg-black/20"></div>
     <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -150,7 +152,10 @@
     </div>
   </div>
 
+  <!-- User Section  -->
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    
+    <!-- search bar -->
     <div class="mb-12">
       <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-xl p-8 border border-gray-100 dark:border-gray-700">
         <div class="relative max-w-2xl mx-auto">
@@ -184,6 +189,7 @@
       </div>
     {:else if filteredCuisines.length > 0}
       
+    <!-- cuisine lists starts  -->
       <div class="space-y-6 mb-50 ">
         {#each filteredCuisines as cuisine, i (cuisine.id)}
           <Card class="w-full max-w-full md:max-w-4xl lg:max-w-5xl mx-auto overflow-hidden bg-white dark:bg-gray-800 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-100 dark:border-gray-700">
@@ -198,7 +204,7 @@
                   <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">
                     {cuisine.cuisine_name}
                   </h3>
-                  {#if cuisine.half_price }
+                  {#if cuisine.price_half }
                   <div class="flex items-center gap-2 mb-4">
                     <div class="text-3xl font-bold text-gray-900 dark:text-white">
                       Half Price: ₹{cuisine.price_half}
@@ -211,6 +217,7 @@
                     </div>
                   </div>
                 </div>
+
                 <div class="mt-4 flex justify-end">
                   {#if user_type==="user"}
                     {#if cuisine.count === 0}
@@ -253,14 +260,13 @@
                       </div>
                     {/if}
                   {:else}
-                      <Button 
-                        class="flex items-center gap-3 px-6 py-3 rounded-2xl text-white font-semibold bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-yellow-700 shadow-lg transition-all duration-300"
-                      >
-                        <CheckCircleSolid class="w-5 h-5" />
-                        Users can Order
-                      </Button>
+                    <Button 
+                      class="flex items-center gap-3 px-6 py-3 rounded-2xl text-white font-semibold bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-yellow-700 shadow-lg transition-all duration-300"
+                    >
+                      <CheckCircleSolid class="w-5 h-5" />
+                      Users can Order
+                    </Button>
                   {/if}
-
                 </div>
               </div>
             </div>
@@ -268,6 +274,7 @@
         {/each}
       </div>
 
+      <!-- cart  -->
       {#if selectedCount > 0}
         <div class="
           fixed bottom-0 left-0 right-0 p-4 bg-gradient-to-r from-blue-600 via-blue-700 to-purple-700 
@@ -337,6 +344,7 @@
       </div>
     {/if}
   </div>
+
 </div>
 <style>
   @keyframes fadeInUp {

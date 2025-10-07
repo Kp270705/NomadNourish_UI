@@ -9,8 +9,9 @@
 
   let allRestaurants = [];
   let loading = true;
-  let error = null;
   let searchLocation = "";
+  let error = null;
+  let err_msg = null;
 
   onMount(async () => {
       try {
@@ -20,13 +21,24 @@
         });
 
         if (!response.ok) {
+          console.log(`in not ok...`)
+          console.log(`status code: ${response.status}`)
           throw new Error('Failed to fetch restaurants');
         }
-
+        console.log(`in ok...`)
+        console.log(`status code: ${response.status}`)
+        loading=false
         allRestaurants = await response.json();
+
       } catch (err) {
-        error = err.message;
+        error = err
+        err_msg = err.message;
+        if(err_msg?.toLowerCase() === "failed to fetch"){
+          err_msg="Check your connection and re try :)"
+        }
+        console.log(`error is: ${err_msg}`)
       } finally {
+        console.log(`\nin finally`)
         loading = false;
       }
   });
@@ -114,6 +126,7 @@
     </div>
   </div>
 
+
   <!-- Main Content -->
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
     {#if $isAuthorized}
@@ -127,8 +140,8 @@
       {:else if error}
         <div class="text-center py-16">
           <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-2xl p-8 max-w-md mx-auto">
-            <p class="text-red-600 dark:text-red-400 text-lg font-medium">Oops! Something went wrong</p>
-            <p class="text-red-500 dark:text-red-300 mt-2">{error}</p>
+            <p class="text-red-600 dark:text-red-400 text-lg font-medium">Oops! Something went wrong </p>
+            <p class="text-red-500 dark:text-red-300 mt-2"> {err_msg} </p>
           </div>
         </div>
       {:else if filteredRestaurants.length > 0}

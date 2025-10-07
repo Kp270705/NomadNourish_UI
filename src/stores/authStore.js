@@ -78,16 +78,17 @@ export async function checkAuth() {
 
     if (user_type === 'user') {
       user.set({
-        name: userDetails[0],
-        email: userDetails[1],
-        image_url: userDetails[2],
+        name: userDetails.username,
+        email: userDetails.email,
+        image_url: userDetails.image_url,
       });
     }
 
     const username = decodedToken.sub;
     isAuthorized.set(true);
     dropdownButton.set('Sign-Out');
-    console.log(`✅ User authenticated from client-side check.\nUser: ${username}`);
+    console.log(`✅ User authenticated from client-side check.\n`);
+    console.log(`✅ User type. ${user_type} \n`);
     return true;
     
   } catch (err) {
@@ -133,25 +134,6 @@ export async function login(formData) {
 
       console.log("User details received:", userDetails);
       console.log("User name received:", userDetails[0]);
-
-      // if (user_type === 'restaurant') {
-      //   restaurant.set({
-      //     name: userDetails.name,
-      //     location: userDetails.location,
-      //     mobile_number: userDetails.mobile_number,
-      //     image_url: userDetails.image_url,
-      //     support_email:userDetails.support_email,
-      //     gstIN: userDetails.gstIN,
-      //   });
-      // }
-
-      // if (user_type === 'user') {
-      //   user.set({
-      //     name: userDetails[0],
-      //     email: userDetails[1],
-      //     image_url: userDetails[2],
-      //   });
-      // }
 
       await checkAuth(); // Update the global state
       return { 
