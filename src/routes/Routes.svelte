@@ -28,6 +28,8 @@
   import RStatus from '../pages/Restaurants/R_Status.svelte';
   import RTest from '../pages/Restaurants/R_Test.svelte';
   import RTest2 from '../pages/Restaurants/R_Test2.svelte';
+  import MenuPage from '../pages/Customer/MenuPage.svelte';
+  import MyOrders from '../pages/Customer/MyOrders.svelte';
 
 
   // export let isLogin
@@ -43,8 +45,10 @@
 
     // -----------------------------------------------
     // User:
-    '/CRestaurant/:id/cuisines': Cuisine,
-    '/CMy-orders': OrderHistory,
+    // '/CRestaurant/:id/cuisines': Cuisine,
+    '/CRestaurant/:id/cuisines': MenuPage,
+    // '/CMy-orders': OrderHistory,
+    '/CMy-orders': MyOrders,
     '/acknowledgement': Acknowledgement, // <-- Route added
     '/textedit': Texteditor,
 
