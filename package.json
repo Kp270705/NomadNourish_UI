@@ -33,6 +33,7 @@
     ]
   },
   "dependencies": {
+    "chart.js": "^4.5.0",
     "jwt-decode": "^4.0.0",
     "lucide-svelte": "^0.544.0",
     "svelte-animate": "0.6.0",

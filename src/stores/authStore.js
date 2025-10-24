@@ -48,7 +48,6 @@ export async function checkAuth() {
     const currentTime = Date.now() / 1000; // in seconds
 
     if (decodedToken.exp < currentTime) {
-
       console.warn("❌ Token expired. Clearing local storage.");
       localStorage.removeItem("jwt_token");
       localStorage.removeItem("user_details");
@@ -56,15 +55,16 @@ export async function checkAuth() {
       console.log("\n\tNo token found no detail");
       dropdownButton.set('Sign-In');
       userData.set(null);
+      logout()
       return false;
 
     }
 
     // Parse the stored strings back into their respective types
     const userDetails = JSON.parse(userDetailsString);
-    userType.set(localStorage.getItem("user_type"));
-
     const user_type = localStorage.getItem("user_type");
+    userType.set(user_type);
+
     if (user_type === 'restaurant') {
       restaurant.set({
         name: userDetails.name,
@@ -182,12 +182,40 @@ export async function logout() {
     }
   }
 
-  // Clear the token and state on the client side
+  // Clear everything on the client side
   localStorage.removeItem("jwt_token");
+  localStorage.removeItem("user_details"); // Also remove user details
+  localStorage.removeItem("user_type");    // Also remove user type
+
+
   isAuthorized.set(false);
-  // authRoute.set('Sign-In');
   userData.set(null);
   userType.set(null);
+
+  // +++ ADD THESE LINES to clear user/restaurant specific data +++
+  user.set({ name: '', email: '', image_url: '' });
+  restaurant.set({ name: '', location: '', mobile_number: '', image_url: '', support_email: '', gstIN: '' });
+
   console.log("✅ User logged out");
   push('/'); // Redirect to the landing page
+}
+
+// This listener synchronizes the auth state across multiple browser tabs.
+if (typeof window !== 'undefined') {
+  window.addEventListener('storage', (event) => {
+    // Define all the keys that are related to authentication
+    const authKeys = ['jwt_token', 'user_details'];
+
+    // If the key that changed is one of our auth keys...
+    if (authKeys.includes(event.key)) {
+      console.log(`Auth data ('${event.key}') changed in another tab, re-checking auth status...`);
+      checkAuth();
+    }
+
+    // Debugging purpose only 
+    // else{
+    //   console.log(`testing..currently false for this`)
+    // }
+    
+  });
 }

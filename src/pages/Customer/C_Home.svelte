@@ -53,7 +53,7 @@
 </script>
 
 <div class="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-900 dark:via-slate-800 dark:to-indigo-900 transition-all duration-500">
-  
+
   <!-- Hero Section -->
   <div class="relative overflow-hidden">
     <div class="absolute inset-0 bg-gradient-to-r from-red-500/20 to-orange-500/20 dark:from-red-600/30 dark:to-orange-600/30"></div>

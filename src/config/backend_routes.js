@@ -1,4 +1,5 @@
 const routesType = {
+  // current_route: "http://0.0.0.0:8000",
   current_route: "http://127.0.0.1:8000",
   // current_route:"https://nomadnourish.onrender.com",
 

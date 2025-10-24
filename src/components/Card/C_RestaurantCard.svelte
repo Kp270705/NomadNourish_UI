@@ -3,6 +3,8 @@
   import { Card, Dropdown, DropdownItem, Avatar, Button,Badge } from "flowbite-svelte";
   import { link } from 'svelte-spa-router';
   import food from "../../assets/icons/food1.png";
+  import ButtonComp from "../Buttons/ButtonComp.svelte";
+  import ButtonDesign from "../../utils/buttonDes";
 
   export let restaurant;
   
@@ -17,7 +19,7 @@
   $: change_card_hover = restaurant.operating_status?.toLowerCase() === "open" ? "from-gray-400/5 to-gray-400/5 dark:from-slate-600/10 dark:to-slate-600/10 opacity-0 group-hover:opacity-100" : "from-gray-400/5 to-gray-400/5 dark:from-gray-500/10 dark:to-gray-300/10 opacity-0 group-hover:opacity-100";
 
   $: change_avatar_style = restaurant.operating_status?.toLowerCase() === "open" ? "from-red-500 to-orange-500 scale-110 opacity-20 " : "from-gray-300 to-orange-300 opacity-20 ";
-  $:image_url= restaurant.image_url? restaurant.image_url : food
+  // $:image_url= restaurant.image_url? restaurant.image_url : food
 
   $:name_decor = restaurant.operating_status?.toLowerCase() === "open" ? "text-gray-900 dark:text-white mb-2 group-hover:text-red-600 dark:group-hover:text-red-500" : "text-gray-300 dark:text-gray-600 mb-2 group-hover:text-gray-600 dark:group-hover:text-gray-200 ";
 
@@ -57,7 +59,7 @@
         <div class="absolute inset-0 bg-gradient-to-r {change_avatar_style} rounded-full transition-opacity duration-500 "></div>
         <Avatar 
           size="xl" 
-          src={image_url} 
+          src={food} 
           class="relative bg-gradient-to-br from-yellow-400 to-orange-500 dark:from-red-500 dark:to-orange-600 transition-all duration-500 group-hover:scale-110 shadow-lg ring-4 ring-white dark:ring-gray-800" 
         />
       </div>
@@ -98,10 +100,20 @@
       <a use:link href={`/CRestaurant/${restaurant.id}/cuisines`} class="w-full sm:w-auto bg-gradient-to-r {see_cuisine_button} text-white text-center py-3 px-6 rounded-2xl font-medium shadow-lg hover:shadow-xl transition-all duration-300">
         See cuisine
       </a>
+
+      <a href="/rcontact/{restaurant.id}" use:link>
       <Button color="light" class="w-full sm:w-auto {contact_button} py-3 px-6 rounded-2xl font-medium transition-all duration-300">
         <PhoneOutline class="mr-2" size="sm" />
         Contact
       </Button>
+    </a>
+
+      <!-- <a href="/rcontact/{restaurant.id}" use:link>
+        <Button size="xs" color="light">
+          <PhoneOutline class="mr-1 h-3 w-3" /> Contact
+        </Button>
+      </a> -->
+
     </div>
 
     <!-- Decorative Elements -->

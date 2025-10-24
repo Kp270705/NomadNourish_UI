@@ -9,6 +9,8 @@
   import { get } from 'svelte/store';
   import { isAuthorized } from '../../stores/authStore.js';
   import HeaderAlongNav from "../../components/header/HeaderAlongNav.svelte";
+  import ButtonComp from "../../components/Buttons/ButtonComp.svelte";
+  import ButtonDesign from "../../utils/buttonDes";
 
   let newCuisine = { cuisine_name: '', price_half: undefined, price_full: 0, category:"" };
   let cuisines = [];
@@ -19,6 +21,8 @@
   let leftCardHeight = 0;
   let searchCuisine = "";
   const dietaryOptions = ["Veg", "Non-Veg", "Egg"];
+
+  const btn_des = new ButtonDesign();
 
   async function fetchMyCuisines() {
     loading = true;
@@ -183,9 +187,9 @@
                   </div>
                 </div>
 
-                <Button
+                <!-- <Button
                   type="submit"
-                  class="w-full h-12 text-base font-semibold bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600"
+                  class="w-full h-14 text-base font-semibold bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600"
                   disabled={isSubmitting}
                 >
                   {#if isSubmitting}
@@ -193,7 +197,10 @@
                   {:else}
                     Add Cuisine
                   {/if}
-                </Button>
+                </Button> -->
+
+                <ButtonComp btnType="submit" btnClass={btn_des.lg_btn("bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600")} btnDisable={isSubmitting} btnName="Add Cuisine"  />
+
               </form>
             </Card>
           </div>

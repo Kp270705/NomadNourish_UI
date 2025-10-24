@@ -31,8 +31,6 @@
     {#if route}
     <a use:link href="{routeLink}" class="absolute top-0 right-0">
         <Button class=" hover:bg-orange-600 font-bold flex items-center gap-2">
-            <!-- <PencilOff size={20} color="#d4ddf2" />
-          <CirclePlusSolid class="shrink-0 h-6 w-6" /> -->
           {routeName} <ArrowRightOutline class="w-5 h-5 mr-2" />
         </Button>
       </a>

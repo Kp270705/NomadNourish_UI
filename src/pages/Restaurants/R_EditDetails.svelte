@@ -1,16 +1,21 @@
 <script>
   import { onMount } from 'svelte';
   import { link, push } from 'svelte-spa-router';
-  import { Card, Alert, Input, Label, Spinner, Fileupload } from "flowbite-svelte";
+  import { Card, Alert, Input, Label, Spinner, Fileupload, Button, GradientButton } from "flowbite-svelte";
    import { InfoCircleSolid, EnvelopeSolid } from "flowbite-svelte-icons";
+   import { Info, Image, Hotel } from 'lucide-svelte';
   import { fly } from "svelte/transition";
 
-  import { Info, Image, Hotel } from 'lucide-svelte';
+  
   import routesType from "../../config/backend_routes.js";
   // import { isAuthorized } from '../../stores/authStore.js';
-  import Move from '../../utils/moveOsc.js';
-  import HeaderAlongNav from '../../components/header/HeaderAlongNav.svelte';
 
+  import HeaderAlongNav from '../../components/header/HeaderAlongNav.svelte';
+  import ButtonComp from '../../components/Buttons/ButtonComp.svelte';
+
+  import Move from '../../utils/moveOsc.js';
+  import ButtonDesign from '../../utils/buttonDes.js';
+  
   let loading = true;
   let error = null;
   let isUpdating = false;
@@ -31,6 +36,9 @@
   // upload preview
   let newImageFile = null;
   let newImageUrl = '';
+
+  const bd = new ButtonDesign();
+
 
   function handleImageChange(e) {
     const f = e.target.files?.[0];
@@ -130,6 +138,7 @@
       
   }
 
+
   onMount(fetchRestaurantDetails);
   
 </script>
@@ -137,7 +146,6 @@
 
 
 <div class="min-h-screen dark:bg-[#0a101d] dark:text-white p-6 lg:p-8" >
-  <!-- <div class="w-full"> -->
     <div class="max-w-7xl mx-auto" >
 
     <!-- top -->
@@ -277,12 +285,11 @@
                 </div>
 
                 <div class="md:col-span-2 flex items-center justify-end gap-4 mt-2">
-                  <button type="button" class="px-4 py-2 rounded-lg border border-gray-700 dark:text-gray-300 hover:bg-gray-700/50">Cancel</button>
 
-                  <button type="submit" class="px-6 py-3 rounded-lg bg-gradient-to-r from-orange-500 to-red-500 text-white font-semibold shadow hover:opacity-95 disabled:opacity-60"
-                    disabled={isUpdating}>
-                    {#if isUpdating}Saving...{:else}Save Changes{/if}
-                  </button>
+                  <ButtonComp btnType="button" btnClass={bd.md_light()} btnName="cancel" />
+
+                  <ButtonComp btnType="submit" btnClass={bd.md_grdnt_twoColor("orange", "red")} btnDisable={isUpdating}  btnName='save changes' />
+
                 </div>
               </form>
             </Card>
@@ -291,5 +298,4 @@
 
       {/if}
     </div>
-  <!-- </div> -->
 </div>

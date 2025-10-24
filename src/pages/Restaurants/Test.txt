@@ -1027,5 +1027,94 @@ restro status control:
 </div>
 
 
+======================================================
+
+RPing.svelte
+
+```
+<script>
+  import { onMount, onDestroy, } from 'svelte';
+  import {  Alert, Button } from 'flowbite-svelte';
+  import {  InfoCircleSolid, EyeSolid  } from 'flowbite-svelte-icons';
+    import routesType from '../../config/backend_routes';
+
+  let notifications = [];
+  let eventSource = null;
+
+  onMount(() => {
+    const token = localStorage.getItem('jwt_token');
+    
+    // Connect to the new SSE endpoint. We pass the token as a query param.
+    // The backend's authentication dependency needs to be able to read this.
+    const url = `http://localhost:8000/restaurant/order/notifications/stream?token=${token}`;
+    eventSource = new EventSource(url);
+
+    // This is called every time the server sends a message
+    eventSource.onmessage = (event) => {
+      const notificationObject = JSON.parse(event.data);
+      notifications = [notificationObject, ...notifications];
+    };
+
+    // Handle connection errors (the browser will try to reconnect automatically!)
+    eventSource.onerror = (error) => {
+      console.error("EventSource failed:", error);
+      eventSource.close();
+    };
+  });
+
+  // Clean up the connection when the user leaves the page
+  onDestroy(() => {
+    if (eventSource) {
+      eventSource.close();
+    }
+  });
+</script>
+
+
+<div class="p-8">
+  <h1 class="text-3xl font-bold">Restaurant Dashboard</h1>
+  
+  <div class="mt-6">
+    <h2 class="text-xl font-semibold">Real-time Notifications</h2>
+    {#if notifications.length === 0}
+      <p class="text-gray-500 mt-2">Listening for updates...</p>
+    {:else}
+      <ul class="mt-2 space-y-2">
+        {#each notifications as notification}
+            <li >
+                {#if notification.type === "ORDER_CANCELLED"}
+                    <Alert class=" dark:bg-slate-700 " >
+                        <div class="flex items-center gap-3">
+                            <InfoCircleSolid class="h-5 w-5" />
+                            <span class="text-lg font-medium">ALERT</span>
+                        </div>
+                        <p class="mt-2 mb-4 text-sm">{notification.payload.message}</p>
+                        <div class="flex gap-2">
+                            <Button size="xs"><EyeSolid class="me-2 h-4 w-4" />View more</Button>
+                            <Button size="xs" outline>Go to Home</Button>
+                        </div>
+                    </Alert>
+                {/if}
+                {#if notification.type === "ORDER_PLACED"}
+                    <Alert color="green">
+                        <div class="flex items-center gap-3">
+                            <InfoCircleSolid class="h-5 w-5" />
+                            <span class="text-lg font-medium">SUCCESS</span>
+                        </div>
+                        <p class="mt-2 mb-4 text-sm">{notification.payload.message}</p>
+                        <div class="flex gap-2">
+                            <Button size="xs" color="green"><EyeSolid class="me-2 h-4 w-4" />View more</Button>
+                            <Button size="xs" outline color="green">Go to Home</Button>
+                        </div>
+                    </Alert>
+                {/if}
+            </li>
+        {/each}
+      </ul>
+    {/if}
+  </div>
+</div>
+```
+
 
 

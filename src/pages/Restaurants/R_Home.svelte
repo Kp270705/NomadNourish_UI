@@ -16,6 +16,10 @@
   import { onMount } from "svelte";
   import { restaurant } from "../../stores/authStore";
   import Skeleton1 from "../../components/skeleton/Skeleton1.svelte";
+  import Notifications from "../../components/Notifications.svelte";
+
+  import ButtonDesign from "../../utils/buttonDes";
+  import ButtonComp from "../../components/Buttons/ButtonComp.svelte";
 
   let loading = true;
   let error = null;
@@ -32,42 +36,49 @@
     kitchen_status:'',
     delivery_status:'',
   };
-  // Quick actions (matching React structure, using Flowbite-Svelte Buttons)
+  const btn_des = new ButtonDesign();
   const quickActions = [
     {
       id: 1,
       label: "Add Cuisine",
       href: "/RCreateCuisine",
-      classes:
+      colorStyle:
         "bg-orange-500 hover:bg-orange-600 dark:bg-orange-600 dark:hover:bg-orange-700"
     },
     {
       id: 2,
-      label: "View Analytics",
+      label: "Order History",
       href: "/ROrderHistory",
-      classes:
+      colorStyle:
         " bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 "
     },
     {
       id: 3,
       label: "Edit Details",
       href: "/REditDetails",
-      classes: "bg-yellow-400 hover:bg-yellow-500 dark:bg-yellow-500 dark:hover:bg-yellow-600 "
+      colorStyle: "bg-yellow-400 hover:bg-yellow-500 dark:bg-yellow-500 dark:hover:bg-yellow-600 "
     },
     {
       id: 4,
       label: "Manage Cuisine",
       href: "/RManageCuisine",
-      classes: "bg-green-500 hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-700"
+      colorStyle: "bg-green-500 hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-700"
     },
     {
       id: 5,
       label: "Edit Status",
       href: "/RStatus",
+      colorStyle:
+        "bg-red-500 hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700"
+    },
+    {
+      id: 6,
+      label: "Manage Orders",
+      href: "/RManageorders",
       // spans two columns on small screens to mirror React’s layout nuance
-      classes:
-        "bg-pink-500 hover:bg-pink-600 dark:bg-pink-600 dark:hover:bg-pink-700"
-    }
+      colorStyle:
+      "bg-pink-500 hover:bg-pink-600 dark:bg-pink-600 dark:hover:bg-pink-700",
+    },
   ];
 
   // Top performing items list
@@ -93,6 +104,7 @@
         throw new Error('Failed to fetch restaurant details.');
       }
       const data = await res.json();
+      
       restaurant_info = {
         id: data.id,
         name: data.name || '',
@@ -104,13 +116,20 @@
         kitchen_status: data.kitchen_status || '',
         delivery_status: data.delivery_status || '',
       };
+      console.log(`\n\n\toperating status: ${data.operating_status}`)
+      
     } catch (err) {
       error = err.message;
     } finally {
       loading = false;
     }
   }
-  onMount(fetchRestaurantDetails)
+  // onMount(fetchRestaurantDetails)
+
+  $: (() => {
+    fetchRestaurantDetails()
+  })()
+
 
   function toggleDesign(info){
     if(info === "open" || info === "active" ){
@@ -144,6 +163,8 @@
   $:ds_des = toggleDesign(restaurant_info.delivery_status?.toLocaleLowerCase())
 
 </script>
+
+
 
 
 
@@ -245,9 +266,9 @@
 
             <div class="grid grid-cols-2 gap-4">
               {#each quickActions as action, index}
-                <a use:link href={action.href} class="w-full {action.classes} rounded-3xl ">
+                <a use:link href={action.href} class="w-full {action.colorStyle} rounded-3xl ">
 
-                  <Button class="w-full h-14 dark:text-white font-semibold text-base shadow-md transition-all duration-200 hover:shadow-lg {action.classes} ">
+                  <!-- <Button type="button" class="w-full h-14 dark:text-white font-semibold text-base shadow-md transition-all duration-200 hover:shadow-lg {action.classes} ">
                     
                     {#if action.id === 1}
                       <PizzaSliceSolid class="w-5 h-5 mr-2" />
@@ -260,8 +281,11 @@
                     {:else if action.id === 5}
                     <CalendarEditSolid class=" h-5 w-5 mr-2 " />
                     {/if}
+
                     {action.label}
-                  </Button>
+                  </Button> -->
+
+                  <ButtonComp btnClass=" {btn_des.lg_btn(action.colorStyle)} " btnName="{action.label}" />
                 </a>
               {/each}
             </div>
@@ -342,7 +366,8 @@
               </div>
             <div class="p-4 bg-blue-500/10 rounded-xl">
                 <ShoppingBagSolid class="h-8 w-8 text-blue-400" />
-              </div>
+                <!-- <RPingMessage /> -->
+            </div>
             </div>
           </div>
         </Card>

@@ -1,6 +1,6 @@
 <script>
   import { onMount } from 'svelte';
-  import { Card, Button, Modal, Label, Input, Spinner } from "flowbite-svelte";
+  import { Card, Button, Badge, Modal, Label, Input, Spinner } from "flowbite-svelte";
   import { PenSolid, TrashBinOutline, CirclePlusSolid, ArrowLeftOutline } from "flowbite-svelte-icons";
   import routesType from "../../config/backend_routes.js";
   import { link, push } from 'svelte-spa-router';
@@ -31,6 +31,7 @@
         throw new Error('Failed to fetch cuisines.');
       }
       cuisines = await response.json();
+      console.log(`cuisines: ${cuisines}`)
     } catch (err) {
       error = err.message;
     } finally {
@@ -78,8 +79,8 @@
   async function handleDelete() {
     try {
       const token = localStorage.getItem("jwt_token");
-      const response = await fetch(`${routesType.current_route}/cuisine/${cuisineToDelete.id}`, {
-        method: 'DELETE',
+      const response = await fetch(`${routesType.current_route}/cuisine/deactivate/${cuisineToDelete.id}`, {
+        method: 'PATCH',
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (!response.ok) {
@@ -140,6 +141,9 @@
                 {cuisine.cuisine_name}
               </h3>
             </div>
+            {#if !cuisine.is_active}
+            <Badge color="red"> Item Reoved from Menu </Badge>
+            {/if}
             
             <!-- price -->
             <div class="flex items-center gap-8 justify-center ">
@@ -208,14 +212,18 @@
 {/if}
 
 {#if cuisineToDelete}
-<Modal title="Delete Cuisine" bind:open={showDeleteModal} size="sm">
+<Modal title="Remove Cuisine" bind:open={showDeleteModal} size="sm">
     <div class="p-4 space-y-4 text-center">
         <p class="text-gray-500 dark:text-gray-400">
-            Are you sure you want to delete **{cuisineToDelete.cuisine_name}**?
-        </p>
+            Are you sure you want to remove this item **{cuisineToDelete.cuisine_name}** from your menu ?
+          </p>
+          <span class=" text-center text-red-500 font-bold " >
+            But it still exists in our app history.
+          </span>
+
         <div class="flex justify-center space-x-4">
             <Button onclick={() => showDeleteModal = false} color="light">Cancel</Button>
-            <Button onclick={handleDelete} color="red">Delete</Button>
+            <Button onclick={handleDelete} color="red">Remove</Button>
         </div>
     </div>
 </Modal>
