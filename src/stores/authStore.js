@@ -16,6 +16,7 @@ export const user = writable({
   name: '',
   email: '',
   image_url: '',
+  current_location: '',
 });
 
 // A writable store for restaurant details
@@ -33,6 +34,7 @@ export const restaurant = writable({
 export async function checkAuth() {
 
   const token = localStorage.getItem("jwt_token");
+  console.log(`token is: ${token}`)
   const userDetailsString = localStorage.getItem("user_details"); // Get the stored details
 
   if (!token || !userDetailsString) {
@@ -81,6 +83,7 @@ export async function checkAuth() {
         name: userDetails.username,
         email: userDetails.email,
         image_url: userDetails.image_url,
+        current_location: userDetails.current_location,
       });
     }
 
@@ -103,7 +106,7 @@ export async function checkAuth() {
 }
 
 
-// Login function - FIXED for your API response format
+// Login function
 export async function login(formData) {
   try {
     const credentials = new URLSearchParams(formData);
@@ -121,7 +124,7 @@ export async function login(formData) {
 
     // Handle different status codes
     if (response.status === 200 && data.access_token) {
-      // console.log(`Token is: ${data.access_token}`);
+      console.log(`Token is: ${data.access_token}`);
       localStorage.setItem("jwt_token", data.access_token);
       
       const userDetails = data.user_details;
@@ -193,29 +196,40 @@ export async function logout() {
   userType.set(null);
 
   // +++ ADD THESE LINES to clear user/restaurant specific data +++
-  user.set({ name: '', email: '', image_url: '' });
+  user.set({ name: '', email: '', image_url: '', current_location: '',  });
   restaurant.set({ name: '', location: '', mobile_number: '', image_url: '', support_email: '', gstIN: '' });
 
   console.log("✅ User logged out");
   push('/'); // Redirect to the landing page
 }
 
+// +++ ADD THIS NEW FUNCTION +++
+export function updateUserDetails(updatedDetails) {
+  // 1. Update the 'user' Svelte store
+  user.update(current => {
+    // Merge existing data with new data
+    return { ...current, ...updatedDetails };
+  });
+
+  // 2. Update the 'user_details' in localStorage
+  try {
+    const storedDetails = JSON.parse(localStorage.getItem("user_details")) || {};
+    const newDetails = { ...storedDetails, ...updatedDetails };
+    localStorage.setItem("user_details", JSON.stringify(newDetails));
+    console.log("Local storage updated with new user details.");
+  } catch (err) {
+    console.error("Failed to update user details in localStorage", err);
+  }
+}
+
 // This listener synchronizes the auth state across multiple browser tabs.
 if (typeof window !== 'undefined') {
   window.addEventListener('storage', (event) => {
-    // Define all the keys that are related to authentication
     const authKeys = ['jwt_token', 'user_details'];
-
-    // If the key that changed is one of our auth keys...
     if (authKeys.includes(event.key)) {
       console.log(`Auth data ('${event.key}') changed in another tab, re-checking auth status...`);
       checkAuth();
     }
-
-    // Debugging purpose only 
-    // else{
-    //   console.log(`testing..currently false for this`)
-    // }
     
   });
 }

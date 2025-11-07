@@ -32,7 +32,12 @@
   import Dashboard from '../pages/Restaurants/Dashboard.svelte';
   import ManageOrders from '../pages/Restaurants/ManageOrders.svelte';
   import Notifications from '../components/Notifications.svelte';
-  import RContact from '../pages/R_Contact.svelte';
+  import RContact from '../pages/Customer/R_Contact.svelte';
+  import CFeedBack from '../pages/Customer/C_FeedBack.svelte';
+  import SearchPage from '../pages/Customer/SearchPage.svelte';
+  import SearchResults from '../pages/Customer/SearchResults.svelte';
+  import UserSettings from '../pages/Customer/settings/UserInfo.svelte';
+  import Others from '../components/Drawer/Others.svelte';
 
 
   // export let isLogin
@@ -45,16 +50,18 @@
     "/CHome":CHome,
     "/test-credentials": TestCredentials,
     '/rcontact/:id': RContact,
+    '/others': Others,
 
     // -----------------------------------------------
     // User:
-    // '/CRestaurant/:id/cuisines': Cuisine,
     '/CRestaurant/:id/cuisines': MenuPage,
-    // '/CMy-orders': OrderHistory,
     '/CMy-orders': MyOrders,
     '/acknowledgement': Acknowledgement, // <-- Route added
     '/textedit': Texteditor,
-
+    '/cfeedback/:id': CFeedBack,
+    '/searchpage':SearchPage,
+    '/search-results/:type/:query': SearchResults,
+    '/usersettings': UserSettings,
     // -----------------------------------------------
     // Restaurant:
     "/RHome": RHome,

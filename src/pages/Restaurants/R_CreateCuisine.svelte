@@ -1,28 +1,38 @@
 <script lang="ts">
-  import { Label, Input, Button, Card, Spinner, Radio } from "flowbite-svelte";
-  import { SearchOutline, CirclePlusSolid, ArrowLeftOutline } from "flowbite-svelte-icons";
+  import { Label, Input, Button, Card, Spinner, Radio, Dropdown, DropdownItem, DropdownGroup, Search, Checkbox } from "flowbite-svelte";
+  import { SearchOutline, CirclePlusSolid, ArrowLeftOutline, ChevronDownOutline } from "flowbite-svelte-icons";
   import { PencilOff } from "lucide-svelte";
   import { push, link } from "svelte-spa-router";
   import { onMount } from 'svelte';
-  
-  import routesType from "../../config/backend_routes";
   import { get } from 'svelte/store';
-  import { isAuthorized } from '../../stores/authStore.js';
+
   import HeaderAlongNav from "../../components/header/HeaderAlongNav.svelte";
-  import ButtonComp from "../../components/Buttons/ButtonComp.svelte";
+  import routesType from "../../config/backend_routes";
   import ButtonDesign from "../../utils/buttonDes";
+  import { isAuthorized } from '../../stores/authStore.js';
+  import Cuisines from "../../utils/restaurants/CuisineFeatures";
 
-  let newCuisine = { cuisine_name: '', price_half: undefined, price_full: 0, category:"" };
-  let cuisines = [];
-  let loading = false;
-  let error = null;
-  let isSubmitting = false;
-  let headerRoute = true;
-  let leftCardHeight = 0;
-  let searchCuisine = "";
-  const dietaryOptions = ["Veg", "Non-Veg", "Egg"];
+  const cuisine_type = new Cuisines().cuisine_types();
+  const dietaryOptions = new Cuisines().cuisine_category();
 
-  const btn_des = new ButtonDesign();
+  let newCuisine = $state({ cuisine_name: "", price_half: undefined, price_full: 0, category:"", category_type:"", });
+  let loading = $state(false);
+  let error = $state(null);
+  let isSubmitting = $state(false);
+  let headerRoute = $state(true);
+  let leftCardHeight = $state(0);
+  let cuisines = $state([]);
+  let searchCuisine = $state("");
+  let searchTerm = $state("");
+
+  let filteredCuisines = $derived(
+    cuisines.filter(cuisine =>
+      cuisine.cuisine_name.toLowerCase().includes(searchCuisine.toLowerCase())
+    )
+  );
+
+  let filteredCuisineType = $derived(cuisine_type.filter((cuisine) => cuisine.name.toLowerCase().indexOf(searchTerm?.toLowerCase()) !== -1));
+  // const btn_des = new ButtonDesign();
 
   async function fetchMyCuisines() {
     loading = true;
@@ -36,7 +46,7 @@
         throw new Error('Failed to fetch cuisines.');
       }
       cuisines = await response.json();
-      console.log(cuisines)
+      console.log( JSON.stringify( cuisines ) )
     } catch (err) {
       error = err.message;
     } finally {
@@ -65,7 +75,7 @@
       
       const addedCuisine = await response.json();
       cuisines = [...cuisines, addedCuisine];
-      newCuisine = { cuisine_name: '', price_half: undefined, price_full: 0, category:"" };
+      newCuisine = { cuisine_name: "", price_half: undefined, price_full: 0, category:"", category_type:"" };
 
     } catch (err) {
       error = err.message;
@@ -83,11 +93,6 @@
       loading=true
     }
   });
-
-  $: filteredCuisines = cuisines.filter(r =>
-    r.cuisine_name.toLowerCase().includes(searchCuisine.toLowerCase())
-  );
-
 
 </script>
 
@@ -187,7 +192,29 @@
                   </div>
                 </div>
 
-                <!-- <Button
+                <!-- cuisine_type: -->
+                <div class="space-y-3">
+                  <Label class="text-gray-700 dark:text-gray-300">Cuisine Type </Label>
+                  <ChevronDownOutline class="ms-2 h-6 w-6 text-white dark:text-white" />
+                  
+                  <Dropdown>
+                    <div class="p-3">
+                      <Search size="md" bind:value={searchTerm} />
+                    </div>
+                    <DropdownGroup class="h-[100%] overflow-y-auto">
+                      {#each filteredCuisineType as cuisine (cuisine)}
+                        <li class="rounded-sm p-2 hover:bg-gray-100 dark:hover:bg-gray-600">
+                          <Checkbox bind:checked={cuisine.checked}>
+                            {cuisine.name}
+                          </Checkbox>
+                        </li>
+                      {/each}
+                    </DropdownGroup>
+                  </Dropdown>
+
+                </div>
+
+                <Button
                   type="submit"
                   class="w-full h-14 text-base font-semibold bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600"
                   disabled={isSubmitting}
@@ -197,9 +224,7 @@
                   {:else}
                     Add Cuisine
                   {/if}
-                </Button> -->
-
-                <ButtonComp btnType="submit" btnClass={btn_des.lg_btn("bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600")} btnDisable={isSubmitting} btnName="Add Cuisine"  />
+                </Button>
 
               </form>
             </Card>
@@ -207,11 +232,11 @@
 
           <!-- Right column wrapper -->
           <div class="space-y-6 md:col-span-5 lg:col-span-6 ">
-            <Card class="p-8 w-full max-w-none bg-white dark:bg-[#172135] rounded-3xl border border-gray-200 dark:border-gray-700 " style={`height:${leftCardHeight}px`} >
+            <Card class="p-8 w-full max-w-none bg-white dark:bg-[#172135] rounded-3xl border border-gray-200 dark:border-gray-700 "  >
               <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">
                 Your Current Existing Menu
               </h2>
-              <!-- search bar:  -->
+
               <div class="max-w-2xl mx-auto mb-6">
                 <div class="relative group">
                   <input
@@ -261,6 +286,9 @@
                           <th class="text-left py-3 px-2 text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
                             Category
                           </th>
+                          <th class="text-left py-3 px-2 text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                            Cuisine Type
+                          </th>
                         </tr>
                       </thead>
                       <tbody>
@@ -293,6 +321,9 @@
                                   {cuisine.category}
                                 </span>
                               </td>
+                              <td class="py-4 px-2 text-gray-900 dark:text-white">
+                                {cuisine.cuisine_type}
+                              </td>
                             </tr>
                           {/each}
                         {/if}
@@ -302,7 +333,6 @@
               {/if}
             </Card>
           </div>
-
       </div>
 
     </div>

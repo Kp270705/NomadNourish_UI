@@ -1,22 +1,30 @@
 <script>
   import { onMount } from 'svelte';
-  import { Card, Button, Badge, Modal, Label, Input, Spinner } from "flowbite-svelte";
-  import { PenSolid, TrashBinOutline, CirclePlusSolid, ArrowLeftOutline } from "flowbite-svelte-icons";
+  import { Card, Button, Badge, Modal, Label, Input, Spinner, Dropdown, DropdownGroup, Search, Checkbox, Radio } from "flowbite-svelte"; // Radio ko import kiya
+  import { PenSolid, TrashBinOutline, CirclePlusSolid, ArrowLeftOutline, ChevronDownOutline } from "flowbite-svelte-icons";
   import routesType from "../../config/backend_routes.js";
   import { link, push } from 'svelte-spa-router';
   import HeaderAlongNav from '../../components/header/HeaderAlongNav.svelte';
+  import Cuisines from '../../utils/restaurants/CuisineFeatures.js';
+  
+  // const cuisine = new Cuisines().cuisine_types();
+  // let cuisine_type = cuisine.cuisine_types(); 
+  
+  const cuisine_type = new Cuisines().cuisine_types();
 
-  // State variables
-  let cuisines = [];
-  let loading = false;
-  let error = null;
+  let cuisines = $state([]);
+  let loading = $state(false);
+  let error = $state(null);
 
   // State for the modals and forms
-  let showEditModal = false;
-  let showDeleteModal = false;
-  let editingCuisine = null;
-  let cuisineToDelete = null;
-  let headerRoute = true
+  let showEditModal = $state(false);
+  let showDeleteModal = $state(false);
+  let editingCuisine = $state(null);
+  let cuisineToDelete = $state(null);
+  let headerRoute = $state(true);
+
+  let searchTerm = $state("");
+  let filteredCuisineType = $derived(cuisine_type.filter((cuisine) => cuisine.name.toLowerCase().indexOf(searchTerm?.toLowerCase()) !== -1));
 
   // --- Fetching Cuisines ---
   async function fetchMyCuisines() {
@@ -31,7 +39,6 @@
         throw new Error('Failed to fetch cuisines.');
       }
       cuisines = await response.json();
-      console.log(`cuisines: ${cuisines}`)
     } catch (err) {
       error = err.message;
     } finally {
@@ -41,7 +48,7 @@
 
   // --- Actions ---
   function openEditModal(cuisine) {
-    editingCuisine = { ...cuisine }; // Copy the object to avoid direct mutation
+    editingCuisine = { ...cuisine };
     showEditModal = true;
   }
   function openDeleteModal(cuisine) {
@@ -49,9 +56,12 @@
     showDeleteModal = true;
   }
   
-  async function handleUpdate() {
+  async function handleUpdate(event) {
+    event.preventDefault(); // Form submit ko default se roka
     try {
       const token = localStorage.getItem("jwt_token");
+      console.log(`Sending cuisine_type: ${editingCuisine.cuisine_type}`); 
+
       const response = await fetch(`${routesType.current_route}/cuisine/${editingCuisine.id}`, {
         method: 'PATCH',
         headers: {
@@ -60,14 +70,16 @@
         },
         body: JSON.stringify({
             cuisine_name: editingCuisine.cuisine_name,
-            price_half: parseFloat(editingCuisine.price_half),
+            price_half: parseFloat(editingCuisine.price_half) || null,
             price_full: parseFloat(editingCuisine.price_full),
+            cuisine_type: editingCuisine.cuisine_type,
         })
       });
+
       if (!response.ok) {
-        throw new Error('Failed to update cuisine.');
+        const errData = await response.json();
+        throw new Error(errData.detail || 'Failed to update cuisine.');
       }
-      // Refresh the list after a successful update
       await fetchMyCuisines();
       showEditModal = false;
     } catch (err) {
@@ -86,7 +98,6 @@
       if (!response.ok) {
         throw new Error('Failed to delete cuisine.');
       }
-      // Refresh the list after a successful delete
       await fetchMyCuisines();
       showDeleteModal = false;
     } catch (err) {
@@ -113,25 +124,17 @@
         <Spinner size="8" color="red" />
       </div>
     {:else if error}
-
       <!-- skeleton -->
       <div class=" grid grid-cols-1 md:grid-cols-2 lg:grid-cols-9 gap-6 max-w-6xl mx-auto" >
-
         {#each {length: 12} as _, i}
           <div role="status" class="lg:col-span-3 space-y-7 h-70 bg-[#f1f1f2] rounded-lg animate-pulse dark:bg-[#0e1930] "> 
           </div> 
         {/each}
-
       </div>
-
-        
-      <!-- </div> -->
     {:else if cuisines.length > 0}
-
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-9 gap-6 max-w-6xl mx-auto" >
         {#each cuisines as cuisine (cuisine.id)}
           <Card class=" border-border/50 hover:border-primary/50 transition-all duration-300 hover:shadow-lg animate-fade-in
-
            bg-gray-100 dark:bg-[#131c30] border-gray-300 dark:hover:border-red-400 
            lg:col-span-3 justify-self-center py-5 space-y-7  ">
 
@@ -139,6 +142,13 @@
             <div class="flex items-center justify-center " >
               <h3 class="text-xl font-bold text-gray-900 dark:text-white truncate">
                 {cuisine.cuisine_name}
+              </h3>
+            </div>
+            <!-- type  -->
+            <div class="flex items-center justify-center " >
+              <h3 class="text-lg font-medium text-gray-600 dark:text-gray-400 truncate">
+                <!-- Fallback diya hai agar cuisine_type null ho -->
+                {cuisine.cuisine_type || 'No Type'} 
               </h3>
             </div>
             {#if !cuisine.is_active}
@@ -189,20 +199,43 @@
 
 {#if editingCuisine}
 <Modal title="Edit Cuisine" bind:open={showEditModal}>
-    <form on:submit|preventDefault={handleUpdate}>
+    <!-- <form onsubmit = {handleUpdate}> YA <form on:submit={handleUpdate}> -->
+    <form onsubmit={handleUpdate}>
         <div class="space-y-4 p-4">
-            <Label>
-                Cuisine Name
-                <Input type="text" bind:value={editingCuisine.cuisine_name}/>
-            </Label>
-            <Label>
-                Half Price
-                <Input type="number" bind:value={editingCuisine.price_half} step="0.01"/>
-            </Label>
-            <Label>
-                Full Price
-                <Input type="number" bind:value={editingCuisine.price_full} step="0.01"/>
-            </Label>
+          <Label>
+              Cuisine Name
+              <Input type="text" bind:value={editingCuisine.cuisine_name}/>
+          </Label>
+          <Label>
+              Half Price
+              <Input type="number" bind:value={editingCuisine.price_half} step="0.01"/>
+          </Label>
+          <Label>
+              Full Price
+              <Input type="number" bind:value={editingCuisine.price_full} step="0.01"/>
+          </Label>
+          <Label class="flex items-center">
+              Cuisine Type
+              <ChevronDownOutline class="ms-2 h-4 w-4 text-gray-600 dark:text-gray-300" />
+          </Label>
+          <Dropdown>
+            <div class="p-3">
+              <Search size="md" bind:value={searchTerm} />
+            </div>
+            <DropdownGroup class="h-48 overflow-y-auto"  >
+              {#each filteredCuisineType as cuisine (cuisine.name)}
+                <li class="rounded-sm p-2 hover:bg-gray-100 dark:hover:bg-gray-600 ">
+                  <Radio 
+                    bind:group={editingCuisine.cuisine_type} 
+                    value={cuisine.name} >
+                    {cuisine.name}
+                  </Radio>
+                </li>
+              {/each}
+            </DropdownGroup>
+
+          </Dropdown>
+                
         </div>
         <div class="flex justify-end p-4 border-t dark:border-gray-700">
             <Button type="submit" color="green">Save Changes</Button>

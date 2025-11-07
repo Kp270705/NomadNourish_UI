@@ -5,17 +5,18 @@
   import { onMount } from 'svelte';
   import { scale, blur } from "svelte/transition";
 
-  // Import the auth store
-  import { isAuthorized, checkAuth, logout } from '../../stores/authStore.js';
-
   // importing components: 
   import UserDetails from "../popover/UserDetails.svelte";  
   import CancelModal from "../alert/CancelModal.svelte";
+  import Others from "../Drawer/Others.svelte";
 
   // import static content
   import nn from "../../assets/icons/diet.png";
-  import UserColors from "../../utils/customers/colours.js";
-  
+  import UserColors from "../../utils/customers/navStyle.js";
+    // Import the auth store
+  import { isAuthorized, checkAuth, logout } from '../../stores/authStore.js';
+
+
   const user_type = localStorage.getItem("user_type");
   let pages = [
     { name: "Home", path: "/protectedHome" },
@@ -68,12 +69,12 @@
     <!-- More Dropdown -->
     <div class="relative">
 
-      <Button class=" {colorStyle.navMoreBtn()} ">
+      <!-- <Button class=" {colorStyle.navMoreBtn()} ">
         More 
         <ChevronDownOutline class="ml-2 h-4 w-4" />
-      </Button>
+      </Button> -->
 
-      <Dropdown class=" {colorStyle.dropDownStyle()} " transition={scale} transitionParams={{ duration: 1 }}>
+      <!-- <Dropdown class=" {colorStyle.dropDownStyle()} " transition={scale} transitionParams={{ duration: 1 }}>
         {#if $isAuthorized}
           <DropdownItem class=" {colorStyle.dropDownItemStyle()} " >
             <Button class=" {colorStyle.signOutBtn} " onclick={() => promptToCancel() } >
@@ -99,7 +100,10 @@
             </a>
           </DropdownItem>
         {/if}        
-      </Dropdown>
+      </Dropdown> -->
+
+      <Others/>
+
     </div>
 
     <!-- Mobile Hamburger -->

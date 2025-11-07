@@ -1,5 +1,6 @@
 <script>
   import { onMount } from 'svelte';
+  import { link } from 'svelte-spa-router';
   import { Card, Badge, Spinner, Button } from 'flowbite-svelte';
   import { ClockOutline, CloseCircleSolid, StoreOutline } from 'flowbite-svelte-icons';
   import routesType from '../../config/backend_routes.js';
@@ -28,7 +29,7 @@
     Preparing: { color: 'blue', text: 'Restaurant is Preparing' },
     Ready: { color: 'purple', text: 'Ready for Delivery/Pickup' },
     Delivered: { color: 'green', text: 'Delivered' },
-    Cancelled: { color: 'red', text: 'Cancelled' },
+    Cancelled: { color: 'red', text: 'CANCELLED' },
   };
 
   onMount(async () => {
@@ -107,6 +108,7 @@
         {#each orders as order (order.id)}
           <div class="border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-[#172135] shadow-sm overflow-hidden">
             
+            <!-- <div class="bg-gradient-to-r from-yellow-200 to-orange-400 dark:bg-[#0f1729] p-3 px-4 text-xs text-gray-600 dark:text-gray-300 grid grid-cols-2 sm:grid-cols-4 gap-4 items-center"> -->
             <div class="bg-gray-200 dark:bg-[#0f1729] p-3 px-4 text-xs text-gray-600 dark:text-gray-300 grid grid-cols-2 sm:grid-cols-4 gap-4 items-center">
               <div>
                 <span class="uppercase font-medium block">Order Placed</span>
@@ -130,10 +132,10 @@
               <div class="md:col-span-2">
                 <div class="flex items-center mb-3">
                    <Badge color={statusStyles[order.status]?.color || 'gray'} class="text-sm font-semibold mr-3">
-                    {statusStyles[order.status]?.text || order.status}
+                    { statusStyles[order.status]?.text || order.status }
                    </Badge>
                    {#if order.status === 'Cancelled'}
-                    <p class="text-sm text-gray-500 dark:text-gray-400">If you were charged, a refund is processing.</p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">By: { order.cancelled_by } </p>
                    {/if}
                 </div>
 
@@ -154,8 +156,11 @@
                   </Button>
                 {/if}
                  {#if order.status === 'Delivered'}
-                   <Button color="light" size="sm" class="w-full justify-center">Leave Feedback</Button>
-                   <Button color="light" size="sm" class="w-full justify-center">Write a Review</Button>
+                  <a use:link href="/cfeedback/{order.id}">
+                  <!-- <a use:link href={"/cfeedback"}> -->
+                    <Button color="light" size="sm" class="w-full justify-center">Leave Feedback</Button>
+                  </a>
+                   <!-- <Button color="light" size="sm" class="w-full justify-center">Write a Review</Button> -->
                 {/if}
                  <Button color="light" size="sm" class="w-full justify-center">View Invoice</Button> 
               </div>

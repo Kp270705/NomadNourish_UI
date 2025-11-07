@@ -3,9 +3,9 @@
   import { params } from 'svelte-spa-router';
   import { Card, Spinner, Button } from 'flowbite-svelte';
   import { MapPinOutline, PhoneOutline, EnvelopeOutline, ArrowLeftOutline } from 'flowbite-svelte-icons';
-  import routesType from '../config/backend_routes.js';
+  import routesType from '../../config/backend_routes.js';
   import { push } from 'svelte-spa-router';
-  import food from "../assets/icons/food1.png";
+  import food from "../../assets/icons/food1.png";
 
   let restaurant = null;
   let loading = true;

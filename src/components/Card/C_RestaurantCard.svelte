@@ -7,7 +7,23 @@
   import ButtonDesign from "../../utils/buttonDes";
 
   export let restaurant;
-  
+  // --- NEW PROP ---
+  // Yeh prop 'UsersHome.svelte' se aa raha hai
+  // Iski value "Momos", "Pizzas", ya 'null' hogi
+  export let categoryQueryParam = null;
+
+  // --- NEW DYNAMIC LINK ---
+  // Ab humara link dynamic hai
+  $: cuisineLink = (() => {
+    let baseLink = `/CRestaurant/${restaurant.id}/cuisines`;
+    if (categoryQueryParam) {
+      // Agar category selected hai, toh link aisa banega:
+      // /CRestaurant/123/cuisines?category=Momos
+      return `${baseLink}?category=${encodeURIComponent(categoryQueryParam)}`;
+    }
+    // Agar koi category selected nahi hai (Show All)
+    return baseLink;
+  })();
 
 
   $: change_color = restaurant.operating_status?.toLowerCase() === "open" ? "bg-green-600 text-white" : "bg-red-500 text-white";
@@ -97,7 +113,8 @@
 
     <!-- Action Buttons -->
     <div class="mt-4 flex flex-col sm:flex-row gap-4 w-full justify-center relative z-10">
-      <a use:link href={`/CRestaurant/${restaurant.id}/cuisines`} class="w-full sm:w-auto bg-gradient-to-r {see_cuisine_button} text-white text-center py-3 px-6 rounded-2xl font-medium shadow-lg hover:shadow-xl transition-all duration-300">
+      <!-- 'See cuisine' button ab dynamic 'cuisineLink' use karega -->
+      <a use:link href={cuisineLink} class="w-full sm:w-auto bg-gradient-to-r {see_cuisine_button} text-white text-center py-3 px-6 rounded-2xl font-medium shadow-lg hover:shadow-xl transition-all duration-300">
         See cuisine
       </a>
 
