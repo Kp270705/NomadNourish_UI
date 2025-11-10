@@ -9,14 +9,12 @@
   import { push, link } from "svelte-spa-router";
   
   // Error Card
-  import Error from "../components/Card/AuthCard.svelte";
+  import AuthMessage from "../components/Card/AuthCard.svelte";
   
 // States
-  let showError = $state(false);
-  let errorMessage = $state("");
+  let showAuthMessage = $state(false);
+  let authMessage = $state("");
   let iconType = $state();
-  
-  // Checkbox state
   let isRestaurant = $state(false);
 
   // Correct: Use $state() for reactive variables
@@ -64,16 +62,16 @@
         setTimeout(() => {
           push("/register");
         }, 700);
-        errorMessage = result.detail;
-        showError = true;
+        authMessage = result.detail;
+        showAuthMessage = true;
         iconType = "userAlreadyFound";
         return;
       } else if (response.status === 200) {
         setTimeout(() => {
           push("/login");
         }, 700);
-        errorMessage = "Registered successfully 🎉 🎉";
-        showError = true;
+        authMessage = "Registered successfully 🎉 🎉";
+        showAuthMessage = true;
         iconType = "registerSuccess";
         return;
       } else if (!response.ok) {
@@ -81,11 +79,11 @@
       }
     } catch (err) {
       console.error("❌ Register error:", err);
-      errorMessage = `${err.message}. Server unavailable.`;
+      authMessage = `${err.message}. Server unavailable.`;
       setTimeout(() => {
         push("/register");
       }, 700);
-      showError = true;
+      showAuthMessage = true;
       iconType = "serverNotAvailable";
       return;
     }
@@ -216,6 +214,22 @@
                   </Label>
                   <Input type="text" name="gstIN" id="gstIN" placeholder="22AAAAA0000A1Z5" required />
                 </div>
+                <div>
+                  <Label for="support_email" class="text-sm font-semibold text-gray-700 dark:text-gray-200 flex items-center space-x-2 mb-1">
+                    <span class="text-blue-500 dark:text-blue-400">📧</span>
+                    <span>Support Email (For Customers)</span>
+                  </Label>
+                  <Input type="email" name="support_email" id="support_email" placeholder="support@yourrestaurant.com" required />
+                </div>
+
+                <!-- <div class="space-y-2">
+                  <Label class="text-sm font-semibold text-gray-700 dark:text-gray-200 flex items-center space-x-2">
+                    <span class="text-blue-500 dark:text-blue-400">📧</span>
+                    <span>Support Email (For Customers)</span>
+                  </Label>
+                  <input type="email" name="support_email" placeholder="support@yourrestaurant.com" class="..." required />
+                </div> -->
+
               </div>
             {:else}
               <div class="space-y-4">
@@ -242,6 +256,15 @@
                   </Label>
                   <Input type="password" name="password" id="password" placeholder="Create a secure password" required />
                 </div>
+
+                <div>
+                  <Label for="location" class="text-sm font-semibold text-gray-700 dark:text-gray-200 flex items-center space-x-2 mb-1">
+                    <span class="text-green-500 dark:text-green-400">🔒</span>
+                    <span>Location</span>
+                  </Label>
+                  <Input type="text" name="location" id="location" placeholder="Enter your current location" required />
+                </div>
+
               </div>
             {/if}
 
@@ -316,9 +339,9 @@
     </div>
   </div>
 
-  {#if showError}
+  {#if showAuthMessage}
     <div class="fixed inset-0 flex items-center justify-center z-50 bg-black/60 dark:bg-black/80 backdrop-blur-md p-4">
-      <Error {errorMessage} {iconType} />
+      <AuthMessage {authMessage} {iconType} />
     </div>
   {/if}
 </div>

@@ -1,47 +1,59 @@
 <script>
-  import { Navbar, NavBrand, NavLi, NavUl, NavHamburger, Button, GradientButton, Dropdown, DropdownItem, Modal } from "flowbite-svelte";
-  import { ChevronDownOutline, UserRemoveOutline} from "flowbite-svelte-icons";
-  import {DarkMode} from "flowbite-svelte";
+  import { Navbar, NavBrand, NavLi, NavUl, NavHamburger, Button, GradientButton, Dropdown, DropdownItem, Modal, DarkMode } from "flowbite-svelte";
+  import { ChevronDownOutline} from "flowbite-svelte-icons";
   import { link, push } from 'svelte-spa-router';
   import { onMount } from 'svelte';
-  import { UserCircleHero } from 'svelte-animated-icons';
   import { scale, blur } from "svelte/transition";
-
-  // Import the auth store
-  import { isAuthorized, checkAuth, logout } from '../../stores/authStore.js';
 
   // importing components: 
   import UserDetails from "../popover/UserDetails.svelte";  
+  import CancelModal from "../alert/CancelModal.svelte";
+  import Others from "../Drawer/Others.svelte";
 
   // import static content
   import nn from "../../assets/icons/diet.png";
-  
+  import UserColors from "../../utils/customers/navStyle.js";
+    // Import the auth store
+  import { isAuthorized, checkAuth, logout } from '../../stores/authStore.js';
+
+
   const user_type = localStorage.getItem("user_type");
   let pages = [
     { name: "Home", path: "/protectedHome" },
     { name: "About", path: "/about" }
   ];
-  
-  let defaultModal = false;
-  const handleCancel = () => {
-    
-  };
-  const handleDelete = () => {
-    logout()
-  };
 
-  function showOptionsDrawer(){
+  const colorStyle = new UserColors;
+  let showCancelModal = false;
+
+
+  function promptToCancel() {
+    showCancelModal = true;
   }
-  
+  function confirmCancel() {
+    logout();
+    closeModal();
+  }
+  function closeModal() {
+    showCancelModal = false;
+  }
 
   onMount(async () => {
     await checkAuth()
   });
 
+
 </script>
 
-<Navbar class="bg-white/95 dark:bg-gray-900/95 backdrop-blur-md border-b border-gray-200 dark:border-gray-700 shadow-lg sticky top-0 z-50 transition-all duration-300">
-  <NavBrand href="/" class="flex items-center space-x-3 hover:scale-105 transition-transform duration-200">
+<CancelModal 
+  bind:popupModal={showCancelModal}
+  message="Are you sure you want to logout?"
+  onConfirm={confirmCancel}
+  onCancel={closeModal}
+/>
+
+<Navbar class=" {colorStyle.navbarStyle()} ">
+  <NavBrand href="/" class=" {colorStyle.navBrandStyle()} ">
     <div class="relative">
       <img src={nn} class="h-8 w-8 sm:h-10 sm:w-10 rounded-full shadow-md" alt="NomadNourish Logo" />
       <div class="absolute -top-1 -right-1 w-3 h-3 bg-gradient-to-r from-orange-400 to-red-500 rounded-full animate-pulse"></div>
@@ -52,86 +64,61 @@
   </NavBrand>
 
   <div class="flex md:order-2 items-center space-x-2">
-    <!-- Dark Mode Toggle -->
-    <div class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200">
-      <DarkMode class="text-gray-600 dark:text-gray-300 hover:text-orange-500 dark:hover:text-orange-400 transition-colors duration-200" />
-    </div>
+      <DarkMode class=" {colorStyle.darkModeBtn()} " />
 
     <!-- More Dropdown -->
     <div class="relative">
-      <Button class="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-medium rounded-xl px-4 py-2 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 border-0">
+
+      <!-- <Button class=" {colorStyle.navMoreBtn()} ">
         More 
         <ChevronDownOutline class="ml-2 h-4 w-4" />
-      </Button>
-      <Dropdown class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 mt-2 min-w-48" transition={scale} transitionParams={{ duration: 200 }}>
+      </Button> -->
+
+      <!-- <Dropdown class=" {colorStyle.dropDownStyle()} " transition={scale} transitionParams={{ duration: 1 }}>
         {#if $isAuthorized}
-          <DropdownItem class="hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg m-1 transition-colors duration-200">
-            <Button 
-            color="red" 
-            class="w-full justify-center font-medium shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-105"
-            onclick={() => (defaultModal = true)}
-            >
+          <DropdownItem class=" {colorStyle.dropDownItemStyle()} " >
+            <Button class=" {colorStyle.signOutBtn} " onclick={() => promptToCancel() } >
               SignOut
             </Button>
-
-            <Modal title="" bind:open={defaultModal} autoclose size="sm" class="w-full">
-              <!-- <svg class="mx-auto mb-3.5 h-11 w-11 text-gray-400 dark:text-gray-500" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" /></svg> -->
-              
-              <svg
-                class="mx-auto mb-3.5 h-11 w-11 text-orange-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" >
-                <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14c-4.418 0-8 2.239-8 5v1h16v-1c0-2.761-3.582-5-8-5z" />
-                <line x1="4" y1="20" x2="20" y2="4" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-              </svg>
-
-
-              <p class="mb-4 text-center text-gray-500 dark:text-gray-300">Are you sure you want to signout?</p>
-              <div class="flex items-center justify-center space-x-4">
-                <Button color="light" onclick={handleCancel}>No, cancel</Button>
-                <Button color="red" onclick={handleDelete}>Yes, I'm sure</Button>
-              </div>
-            </Modal>
-
           </DropdownItem>
+          {#if user_type == 'user'}
+            <DropdownItem class=" {colorStyle.dropDownItemStyle()} ">
+              <a href="/CMy-orders" use:link class="w-full">
+                <GradientButton color="tealToLime" class=" {colorStyle.myOrdrdGrdBtnStyle()} ">
+                  My Orders
+                </GradientButton>
+              </a>
+            </DropdownItem>
+          {/if}
+
         {:else}
-          <DropdownItem class="hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg m-1 transition-colors duration-200">
+          <DropdownItem class=" {colorStyle.dropDownItemStyle()} " >
             <a href="/login" use:link class="w-full">
               <GradientButton color="cyanToBlue" class="w-full justify-center font-medium shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-105">
                 Sign In
               </GradientButton>
             </a>
           </DropdownItem>
-        {/if}
-        
-        {#if user_type == 'user'}
-          <DropdownItem class="hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg m-1 transition-colors duration-200">
-            <a href="/CMy-orders" use:link class="w-full">
-              <GradientButton color="tealToLime" class="w-full justify-center font-medium shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-105">
-                My Orders
-              </GradientButton>
-            </a>
-          </DropdownItem>
-        {/if}
-      </Dropdown>
+        {/if}        
+      </Dropdown> -->
+
+      <Others/>
+
     </div>
 
     <!-- Mobile Hamburger -->
-    <NavHamburger class="md:hidden text-gray-600 dark:text-gray-300 hover:text-orange-500 dark:hover:text-orange-400 transition-colors duration-200" />
+    <NavHamburger class=" {colorStyle.navHamburgerStyle()} " />
   </div>
 
-  <NavUl class="order-1 md:flex md:space-x-8 md:mt-0 md:text-sm md:font-medium md:border-0 bg-white dark:bg-gray-900 md:bg-transparent md:dark:bg-transparent">
+  <NavUl class=" {colorStyle.navUlStyle() } ">
     {#each pages as page}
       <NavLi class="group">
-        <a 
-          use:link 
-          href={page.path} 
-          class="block py-3 px-4 text-gray-700 dark:text-gray-200 hover:text-orange-500 dark:hover:text-orange-400 font-medium transition-all duration-300 relative overflow-hidden rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800/50"
-        >
+        <a use:link href={page.path} class=" {colorStyle.navLiLinkStyle()} " >
           {page.name}
-          <span class="absolute bottom-0 left-1/2 w-0 h-0.5 bg-gradient-to-r from-orange-500 to-red-500 group-hover:w-full group-hover:left-0 transition-all duration-300"></span>
         </a>
       </NavLi>
     {/each}
-    {#if !$isAuthorized}
+     {#if !$isAuthorized}
       <NavLi>
         <a use:link href="/test-credentials">
           <GradientButton color="purpleToPink">Test Data</GradientButton>

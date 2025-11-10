@@ -16,6 +16,7 @@ export const user = writable({
   name: '',
   email: '',
   image_url: '',
+  current_location: '',
 });
 
 // A writable store for restaurant details
@@ -24,6 +25,7 @@ export const restaurant = writable({
   location: '',
   mobile_number: '',
   image_url: '',
+  support_email:'',
   gstIN: ''
 });
 
@@ -32,6 +34,7 @@ export const restaurant = writable({
 export async function checkAuth() {
 
   const token = localStorage.getItem("jwt_token");
+  console.log(`token is: ${token}`)
   const userDetailsString = localStorage.getItem("user_details"); // Get the stored details
 
   if (!token || !userDetailsString) {
@@ -46,9 +49,7 @@ export async function checkAuth() {
     const decodedToken = jwtDecode(token);
     const currentTime = Date.now() / 1000; // in seconds
 
-
     if (decodedToken.exp < currentTime) {
-
       console.warn("❌ Token expired. Clearing local storage.");
       localStorage.removeItem("jwt_token");
       localStorage.removeItem("user_details");
@@ -56,38 +57,41 @@ export async function checkAuth() {
       console.log("\n\tNo token found no detail");
       dropdownButton.set('Sign-In');
       userData.set(null);
+      logout()
       return false;
 
     }
 
     // Parse the stored strings back into their respective types
     const userDetails = JSON.parse(userDetailsString);
-    userType.set(localStorage.getItem("user_type"));
-
     const user_type = localStorage.getItem("user_type");
+    userType.set(user_type);
 
     if (user_type === 'restaurant') {
       restaurant.set({
-        name: userDetails[0],
-        location: userDetails[1],
-        mobile_number: userDetails[2],
-        image_url: userDetails[3],
-        gstIN: userDetails[4]
+        name: userDetails.name,
+        location: userDetails.location,
+        mobile_number: userDetails.mobile_number,
+        image_url: userDetails.image_url,
+        support_email:userDetails.support_email,
+        gstIN: userDetails.gstIN,
       });
     }
 
     if (user_type === 'user') {
       user.set({
-        name: userDetails[0],
-        email: userDetails[1],
-        image_url: userDetails[2],
+        name: userDetails.username,
+        email: userDetails.email,
+        image_url: userDetails.image_url,
+        current_location: userDetails.current_location,
       });
     }
 
     const username = decodedToken.sub;
     isAuthorized.set(true);
     dropdownButton.set('Sign-Out');
-    console.log(`✅ User authenticated from client-side check.\nUser: ${username}`);
+    console.log(`✅ User authenticated from client-side check.\n`);
+    console.log(`✅ User type. ${user_type} \n`);
     return true;
     
   } catch (err) {
@@ -102,7 +106,7 @@ export async function checkAuth() {
 }
 
 
-// Login function - FIXED for your API response format
+// Login function
 export async function login(formData) {
   try {
     const credentials = new URLSearchParams(formData);
@@ -120,7 +124,7 @@ export async function login(formData) {
 
     // Handle different status codes
     if (response.status === 200 && data.access_token) {
-      // console.log(`Token is: ${data.access_token}`);
+      console.log(`Token is: ${data.access_token}`);
       localStorage.setItem("jwt_token", data.access_token);
       
       const userDetails = data.user_details;
@@ -134,24 +138,6 @@ export async function login(formData) {
       console.log("User details received:", userDetails);
       console.log("User name received:", userDetails[0]);
 
-      if (user_type === 'restaurant') {
-        restaurant.set({
-          name: userDetails[0],
-          location: userDetails[1],
-          mobile_number: userDetails[2],
-          image_url: userDetails[3],
-          gstIN: userDetails[4]
-        });
-      }
-
-      if (user_type === 'user') {
-        user.set({
-          name: userDetails[0],
-          email: userDetails[1],
-          image_url: userDetails[2],
-        });
-      }
-
       await checkAuth(); // Update the global state
       return { 
         success: true, 
@@ -159,6 +145,7 @@ export async function login(formData) {
         message: data.message,
         user:data.user_type, 
       };
+
     } else {
       // Return error details for UI handling
       return { 
@@ -198,12 +185,51 @@ export async function logout() {
     }
   }
 
-  // Clear the token and state on the client side
+  // Clear everything on the client side
   localStorage.removeItem("jwt_token");
+  localStorage.removeItem("user_details"); // Also remove user details
+  localStorage.removeItem("user_type");    // Also remove user type
+
+
   isAuthorized.set(false);
-  // authRoute.set('Sign-In');
   userData.set(null);
   userType.set(null);
+
+  // +++ ADD THESE LINES to clear user/restaurant specific data +++
+  user.set({ name: '', email: '', image_url: '', current_location: '',  });
+  restaurant.set({ name: '', location: '', mobile_number: '', image_url: '', support_email: '', gstIN: '' });
+
   console.log("✅ User logged out");
   push('/'); // Redirect to the landing page
+}
+
+// +++ ADD THIS NEW FUNCTION +++
+export function updateUserDetails(updatedDetails) {
+  // 1. Update the 'user' Svelte store
+  user.update(current => {
+    // Merge existing data with new data
+    return { ...current, ...updatedDetails };
+  });
+
+  // 2. Update the 'user_details' in localStorage
+  try {
+    const storedDetails = JSON.parse(localStorage.getItem("user_details")) || {};
+    const newDetails = { ...storedDetails, ...updatedDetails };
+    localStorage.setItem("user_details", JSON.stringify(newDetails));
+    console.log("Local storage updated with new user details.");
+  } catch (err) {
+    console.error("Failed to update user details in localStorage", err);
+  }
+}
+
+// This listener synchronizes the auth state across multiple browser tabs.
+if (typeof window !== 'undefined') {
+  window.addEventListener('storage', (event) => {
+    const authKeys = ['jwt_token', 'user_details'];
+    if (authKeys.includes(event.key)) {
+      console.log(`Auth data ('${event.key}') changed in another tab, re-checking auth status...`);
+      checkAuth();
+    }
+    
+  });
 }
