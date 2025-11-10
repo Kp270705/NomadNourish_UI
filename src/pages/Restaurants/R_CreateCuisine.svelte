@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { Label, Input, Button, Card, Spinner, Radio, Dropdown, DropdownItem, DropdownGroup, Search, Checkbox } from "flowbite-svelte";
-  import { SearchOutline, CirclePlusSolid, ArrowLeftOutline, ChevronDownOutline } from "flowbite-svelte-icons";
+  import { Label, Input, Button, Card, Spinner, Radio, Dropdown, DropdownGroup, Search, } from "flowbite-svelte";
+  import { SearchOutline, ChevronDownOutline } from "flowbite-svelte-icons";
   import { PencilOff } from "lucide-svelte";
   import { push, link } from "svelte-spa-router";
   import { onMount } from 'svelte';
@@ -18,10 +18,11 @@
   let newCuisine = $state({ cuisine_name: "", price_half: undefined, price_full: 0, category:"", category_type:"", });
   let loading = $state(false);
   let error = $state(null);
+  let cuisines = $state([]);
+
   let isSubmitting = $state(false);
   let headerRoute = $state(true);
   let leftCardHeight = $state(0);
-  let cuisines = $state([]);
   let searchCuisine = $state("");
   let searchTerm = $state("");
 
@@ -32,7 +33,6 @@
   );
 
   let filteredCuisineType = $derived(cuisine_type.filter((cuisine) => cuisine.name.toLowerCase().indexOf(searchTerm?.toLowerCase()) !== -1));
-  // const btn_des = new ButtonDesign();
 
   async function fetchMyCuisines() {
     loading = true;
@@ -46,7 +46,7 @@
         throw new Error('Failed to fetch cuisines.');
       }
       cuisines = await response.json();
-      console.log( JSON.stringify( cuisines ) )
+      // console.log( JSON.stringify( cuisines ) )
     } catch (err) {
       error = err.message;
     } finally {
@@ -93,7 +93,6 @@
       loading=true
     }
   });
-
 </script>
 
 
@@ -192,21 +191,22 @@
                   </div>
                 </div>
 
-                <!-- cuisine_type: -->
+                <!-- cuisine_type Dropdown: -->
                 <div class="space-y-3">
                   <Label class="text-gray-700 dark:text-gray-300">Cuisine Type </Label>
                   <ChevronDownOutline class="ms-2 h-6 w-6 text-white dark:text-white" />
-                  
-                  <Dropdown>
+                  <Dropdown >
                     <div class="p-3">
                       <Search size="md" bind:value={searchTerm} />
                     </div>
-                    <DropdownGroup class="h-[100%] overflow-y-auto">
-                      {#each filteredCuisineType as cuisine (cuisine)}
-                        <li class="rounded-sm p-2 hover:bg-gray-100 dark:hover:bg-gray-600">
-                          <Checkbox bind:checked={cuisine.checked}>
+                    <DropdownGroup class="h-48 overflow-y-auto"  >
+                      {#each filteredCuisineType as cuisine (cuisine.name)}
+                        <li class="rounded-sm p-2 hover:bg-gray-100 dark:hover:bg-gray-600 ">
+                          <Radio 
+                            bind:group={ newCuisine.category_type } 
+                            value={cuisine.name} >
                             {cuisine.name}
-                          </Checkbox>
+                          </Radio>
                         </li>
                       {/each}
                     </DropdownGroup>

@@ -5,388 +5,28 @@ MenuPage.svelte :
 
 <script>
   import { onMount } from 'svelte';
-  import { params, push } from 'svelte-spa-router';
-  import { Card, Button, Badge } from 'flowbite-svelte';
-  import { MapPinOutline, ShoppingBagSolid  } from 'flowbite-svelte-icons';
-  import routesType from '../../config/backend_routes.js';
-  import nn from "../../assets/Images/Home/nn.png"
-
-  // State variables
-  let restaurant = { name: 'Loading...', location: '...' };
-  let cuisines = [];
-  let cart = {};
-  let loading = true;
-  let error = null;
-  let restaurant_id = 0;
-  
-  // Reactive calculations for the cart summary
-  $: cartItems = Object.values(cart);
-  $: totalItemsInCart = cartItems.reduce((sum, item) => sum + item.quantity, 0);
-  $: clientTotalPrice = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
-
-  async function fetchMenuData(id) {
-    try {
-      const response = await fetch(`${routesType.current_route}/cuisine/cuisines_by_restaurant_id/${id}`);
-      if (!response.ok) throw new Error('Failed to fetch menu.');
-      const data = await response.json();
-      restaurant = { name: data.restaurant_name, location: data.restaurant_location };
-      cuisines = data.cuisines;
-    } catch (err) {
-      error = err.message;
-    } finally {
-      loading = false;
-    }
-  }
-
-  function addToCart(cuisine, size) {
-    const price = size === 'half' ? cuisine.price_half : cuisine.price_full;
-    const cartKey = `${cuisine.id}-${size}`;
-
-    if (cart[cartKey]) {
-      cart[cartKey].quantity++;
-    } else {
-      cart[cartKey] = {
-        id: cuisine.id,
-        name: cuisine.cuisine_name,
-        size,
-        price,
-        quantity: 1,
-      };
-    }
-    cart = cart;
-  }
-
-  function updateQuantity(cartKey, change) {
-    if (cart[cartKey]) {
-      cart[cartKey].quantity += change;
-      if (cart[cartKey].quantity <= 0) {
-        delete cart[cartKey];
-      }
-      cart = cart;
-    }
-  }
-  
-  async function submitOrder() {
-    if (cartItems.length === 0) {
-      alert("Your cart is empty!");
-      return;
-    }
-
-    const orderPayload = {
-      client_total_price: clientTotalPrice,
-      items: cartItems.map(item => ({
-        cuisine_id: item.id,
-        quantity: item.quantity,
-        size: item.size
-      }))
-    };
-    
-    try {
-      const token = localStorage.getItem('jwt_token');
-      const response = await fetch(`${routesType.current_route}/order/create/${restaurant_id}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(orderPayload)
-      });
-
-      const responseData = await response.json();
-      if (!response.ok) {
-        throw new Error(responseData.detail || 'Failed to place order.');
-      }
-      
-      cart = {};
-      push('/Cmy-orders');
-
-    } catch (err) {
-      console.error("Order submission failed:", err);
-      alert(`Order Failed: ${err.message}`);
-    }
-  }
-
-  $: if ($params && $params.id) {
-    loading = true;
-    error = null;
-    restaurant_id = parseInt($params.id);
-    console.log(`params id: ${$params.id} `)
-    fetchMenuData($params.id);
-  }
-</script>
-
-<div class="min-h-screen bg-gray-50 dark:bg-gray-900">
-  <!-- Header Section - More spacious -->
-  <div class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
-    <div class="max-w-7xl mx-auto px-6 lg:px-8 py-10">
-      <h1 class="text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-3">
-        {restaurant.name}
-      </h1>
-      <p class="text-lg text-gray-600 dark:text-gray-400 flex items-center gap-2">
-        <MapPinOutline size="md"/> {restaurant.location}
-      </p>
-    </div>
-  </div>
-
-  <div class="max-w-5xl mx-auto px-6 lg:px-8 py-12">
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
-      
-      <!-- Menu Section - More spacious -->
-      <div class="lg:col-span-7">
-
-        <div class="mb-10">
-          <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-            Our Menu
-          </h2>
-          <p class="text-gray-600 dark:text-gray-400">
-            {cuisines.length} delicious items to choose from
-          </p>
-        </div>
-
-        {#if loading}
-          <div class="flex items-center justify-center py-32">
-            <div class="text-center">
-              <div class="animate-spin rounded-full h-16 w-16 border-b-4 border-orange-500 mx-auto mb-6"></div>
-              <p class="text-gray-600 dark:text-gray-400 text-lg">Loading menu...</p>
-            </div>
-          </div>
-        {:else if error}
-          <div class="bg-red-50 dark:bg-red-900/20 border-2 border-red-200 dark:border-red-800 rounded-2xl p-8 text-center">
-            <p class="text-red-600 dark:text-red-400 text-lg font-medium">{error}</p>
-          </div>
-        {:else}
-          <div class="space-y-6">
-            {#each cuisines as cuisine (cuisine.id)}
-              <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm hover:shadow-lg 
-                          transition-all duration-300 border-2 border-gray-100 dark:border-gray-700
-                          hover:border-orange-200 dark:hover:border-orange-800 p-6 lg:p-8">
-                <img src="{nn}" alt="nnIcon" height="50%" width="100%" >
-                <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-                  <!-- Item Info -->
-                  <div class="flex items-start gap-4 flex-1">
-                    <!-- Veg/Non-veg Indicator -->
-                    <div class="flex-shrink-0 mt-1">
-                      <div class="w-7 h-7 rounded border-2 flex items-center justify-center"
-                           style="border-color: {cuisine.category === 'Veg' ? '#22c55e' : '#ef4444'}">
-                        <div class="w-3.5 h-3.5 rounded-full" 
-                             style="background-color: {cuisine.category === 'Veg' ? '#22c55e' : '#ef4444'}"></div>
-                      </div>
-                    </div>
-                    
-                    <div class="flex-1">
-                      <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-                        {cuisine.cuisine_name}
-                      </h3>
-                      <Badge color={cuisine.category === 'Veg' ? 'green' : 'red'} class="text-sm px-3 py-1">
-                        {cuisine.category}
-                      </Badge>
-                    </div>
-                  </div>
-                  
-                  <!-- Action Buttons -->
-                  <div class="flex flex-col sm:flex-row gap-3 lg:min-w-[280px]">
-                    {#if cuisine.price_half}
-                      <Button 
-                        size="xl"
-                        color="light"
-                        class="w-full sm:flex-1 text-base font-bold py-4 border-2 hover:border-orange-300 
-                               hover:bg-orange-50 dark:hover:bg-orange-900/20"
-                        onclick={() => addToCart(cuisine, 'half')}>
-                        <div class="flex flex-col items-center gap-1">
-                          <span class="text-xs text-gray-500 dark:text-gray-400">Half</span>
-                          <span class="text-lg">₹{cuisine.price_half}</span>
-                        </div>
-                      </Button>
-                    {/if}
-                    <Button 
-                      size="xl"
-                      class="w-full sm:flex-1 text-base font-bold py-4 bg-gradient-to-r from-orange-500 to-red-600
-                             hover:from-orange-600 hover:to-red-700 shadow-md hover:shadow-lg"
-                      onclick={() => addToCart(cuisine, 'full')}>
-                      <div class="flex flex-col items-center gap-1">
-                        <span class="text-xs opacity-90">Full</span>
-                        <span class="text-lg">₹{cuisine.price_full}</span>
-                      </div>
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            {/each}
-          </div>
-        {/if}
-      </div>
-
-      <!-- Cart Section - More spacious -->
-      <div class="lg:col-span-5">
-        <div class="lg:sticky lg:top-8">
-          <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border-2 border-gray-100 dark:border-gray-700 p-8">
-            
-            <!-- Cart Header -->
-            <div class="flex items-center justify-between mb-8 pb-6 border-b-2 border-gray-100 dark:border-gray-700">
-              <div>
-                <h2 class="text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-3 mb-1">
-                  <ShoppingBagSolid class="text-orange-500" size="lg"/>
-                  Your Cart
-                </h2>
-                {#if totalItemsInCart > 0}
-                  <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">
-                    {totalItemsInCart} {totalItemsInCart === 1 ? 'item' : 'items'} added
-                  </p>
-                {/if}
-              </div>
-            </div>
-
-            {#if cartItems.length === 0}
-              <!-- Empty Cart State -->
-              <div class="py-20 text-center">
-                <div class="w-24 h-24 mx-auto mb-6 bg-gray-100 dark:bg-gray-700 rounded-full 
-                            flex items-center justify-center">
-                  <ShoppingBagSolid size="xl" class="text-gray-400 dark:text-gray-500" />
-                </div>
-                <h3 class="text-xl font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                  Cart is Empty
-                </h3>
-                <p class="text-gray-500 dark:text-gray-400">
-                  Add items from the menu to get started
-                </p>
-              </div>
-            {:else}
-              <!-- Cart Items -->
-              <div class="space-y-5 mb-8 max-h-[450px] overflow-y-auto pr-2">
-                {#each cartItems as item (`${item.id}-${item.size}`)}
-                  <div class="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-5 
-                              hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                    
-                    <div class="flex justify-between items-start mb-4 ">
-                      <div class="flex-1 pr-4">
-                        <h4 class="font-bold text-gray-900 dark:text-white text-lg mb-1">
-                          {item.name}
-                        </h4>
-                        <p class="text-sm text-gray-500 dark:text-gray-400 capitalize">
-                          {item.size} plate • ₹{item.price} each
-                        </p>
-                      </div>
-                      <div class="text-right">
-                        <p class="text-xl font-bold text-orange-600 dark:text-orange-400">
-                          ₹{(item.price * item.quantity).toFixed(2)}
-                        </p>
-                      </div>
-                    </div>
-                    
-                    <!-- Quantity Controls -->
-                    <div class="flex items-center justify-end gap-4">
-                      <div class="flex items-center gap-3 bg-white dark:bg-gray-800 rounded-lg 
-                                  p-2 shadow-sm border border-gray-200 dark:border-gray-600">
-                        <Button 
-                          size="sm" 
-                          color="light"
-                          class="w-10 h-10 p-0 flex items-center justify-center font-bold text-lg
-                                 hover:bg-red-50 dark:hover:bg-red-900/20"
-                          onclick={() => updateQuantity(`${item.id}-${item.size}`, -1)}>
-                          −
-                        </Button>
-                        <span class="w-12 text-center font-bold text-lg text-gray-900 dark:text-white">
-                          {item.quantity}
-                        </span>
-                        <Button 
-                          size="sm" 
-                          color="light"
-                          class="w-10 h-10 p-0 flex items-center justify-center font-bold text-lg
-                                 hover:bg-green-50 dark:hover:bg-green-900/20"
-                          onclick={() => updateQuantity(`${item.id}-${item.size}`, 1)}>
-                          +
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                {/each}
-              </div>
-
-              <!-- Cart Summary -->
-              <div class="border-t-2 border-gray-200 dark:border-gray-700 pt-6 space-y-6">
-                <div class="flex justify-between items-center">
-                  <span class="text-2xl font-bold text-gray-900 dark:text-white">Total</span>
-                  <span class="text-3xl font-bold text-orange-600 dark:text-orange-400">
-                    ₹{clientTotalPrice.toFixed(2)}
-                  </span>
-                </div>
-                
-                <Button 
-                  size="xl" 
-                  class="w-full text-lg font-bold py-5 bg-gradient-to-r from-orange-500 to-red-600
-                         hover:from-orange-600 hover:to-red-700 shadow-lg hover:shadow-xl 
-                         transition-all rounded-xl"
-                  onclick={submitOrder}>
-                  Place Order →
-                </Button>
-              </div>
-            {/if}
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<style>
-  /* Custom scrollbar for cart items */
-  .space-y-5::-webkit-scrollbar {
-    width: 8px;
-  }
-  
-  .space-y-5::-webkit-scrollbar-track {
-    background: transparent;
-  }
-  
-  .space-y-5::-webkit-scrollbar-thumb {
-    background: #d1d5db;
-    border-radius: 4px;
-  }
-  
-  .dark .space-y-5::-webkit-scrollbar-thumb {
-    background: #4b5563;
-  }
-  
-  .space-y-5::-webkit-scrollbar-thumb:hover {
-    background: #9ca3af;
-  }
-  
-  .dark .space-y-5::-webkit-scrollbar-thumb:hover {
-    background: #6b7280;
-  }
-</style>
-
-```
-
-============================================================
-
-
-
-Ne Menu Page:
-
-```
-<script>
-  import { onMount } from 'svelte';
-  import { params, push } from 'svelte-spa-router';
+  import { params, push, link } from 'svelte-spa-router'; // 'link' import kiya
   import { Card, Button, Badge } from 'flowbite-svelte';
   import { MapPinOutline, ShoppingBagSolid, StarSolid, ClockOutline, UsersOutline } from 'flowbite-svelte-icons';
   import routesType from '../../config/backend_routes.js';
   import nn from "../../assets/Images/Home/nn.png"
   import food from "../../assets/icons/food1.png"
 
+  // --- GLOBAL CART STORE IMPORT KIYA ---
+  import { cart } from '../../stores/cartStore.js'; 
+  
   // State variables
   let restaurant = { name: 'Loading...', location: '...' };
   let cuisines = [];
-  let cart = {};
+  // let cart = {}; // <-- HATA DIYA
   let loading = true;
   let error = null;
   let restaurant_id = 0;
   let selectedCategory = 'all';
   
-  // Reactive calculations for the cart summary
-  $: cartItems = Object.values(cart);
-  $: totalItemsInCart = cartItems.reduce((sum, item) => sum + item.quantity, 0);
-  $: clientTotalPrice = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  // Reactive calculations ab GLOBAL STORE se
+  $: cartItems = Object.values($cart.items); 
+  $: totalItemsInCart = cartItems.reduce((sum, item) => sum + item.quantity, 0);  
   $: categories = [...new Set(cuisines.map(c => c.category))];
   $: filteredCuisines = selectedCategory === 'all' ? cuisines : cuisines.filter(c => c.category === selectedCategory);
 
@@ -404,73 +44,6 @@ Ne Menu Page:
     }
   }
 
-  function addToCart(cuisine, size) {
-    const price = size === 'half' ? cuisine.price_half : cuisine.price_full;
-    const cartKey = `${cuisine.id}-${size}`;
-
-    if (cart[cartKey]) {
-      cart[cartKey].quantity++;
-    } else {
-      cart[cartKey] = {
-        id: cuisine.id,
-        name: cuisine.cuisine_name,
-        size,
-        price,
-        quantity: 1,
-      };
-    }
-    cart = cart;
-  }
-
-  function updateQuantity(cartKey, change) {
-    if (cart[cartKey]) {
-      cart[cartKey].quantity += change;
-      if (cart[cartKey].quantity <= 0) {
-        delete cart[cartKey];
-      }
-      cart = cart;
-    }
-  }
-  
-  async function submitOrder() {
-    if (cartItems.length === 0) {
-      alert("Your cart is empty!");
-      return;
-    }
-
-    const orderPayload = {
-      client_total_price: clientTotalPrice,
-      items: cartItems.map(item => ({
-        cuisine_id: item.id,
-        quantity: item.quantity,
-        size: item.size
-      }))
-    };
-    
-    try {
-      const token = localStorage.getItem('jwt_token');
-      const response = await fetch(`${routesType.current_route}/order/create/${restaurant_id}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(orderPayload)
-      });
-
-      const responseData = await response.json();
-      if (!response.ok) {
-        throw new Error(responseData.detail || 'Failed to place order.');
-      }
-      
-      cart = {};
-      push('/Cmy-orders');
-
-    } catch (err) {
-      console.error("Order submission failed:", err);
-      alert(`Order Failed: ${err.message}`);
-    }
-  }
 
   $: if ($params && $params.id) {
     loading = true;
@@ -481,8 +54,8 @@ Ne Menu Page:
   }
 </script>
 
-<!-- Clean Minimal Background -->
 <div class="min-h-screen bg-gray-50 dark:bg-gray-900">
+
   <!-- Compact Header Section -->
   <div class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
     <div class="max-w-6xl mx-auto px-4 py-6">
@@ -515,13 +88,13 @@ Ne Menu Page:
         </div>
       </div>
     </div>
-  </div>
+  </div>        
 
-  <div class="max-w-6xl mx-auto px-4 py-6">
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+  <div class="max-w-6xl mx-auto px-4 py-6 ">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 ">
       
-      <!-- Compact Menu Section -->
-      <div class="lg:col-span-8">
+      <div class="lg:col-span-8 ">
+        
         <!-- Minimal Menu Header -->
         <div class="mb-6">
           <div class="flex items-center justify-between mb-4">
@@ -549,47 +122,37 @@ Ne Menu Page:
           </div>
         </div>
 
-        {#if loading}
-          <div class="flex items-center justify-center py-16">
-            <div class="text-center">
-              <div class="animate-spin rounded-full h-8 w-8 border-2 border-orange-500 border-t-transparent mx-auto"></div>
-              <p class="text-gray-600 dark:text-gray-400 mt-4">Loading menu...</p>
-            </div>
-          </div>
-        {:else if error}
-          <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 text-center">
-            <p class="text-red-600 dark:text-red-400 font-medium">{error}</p>
-          </div>
-        {:else}
+        {#if !loading && !error}
           <div class="space-y-4">
             {#each filteredCuisines as cuisine (cuisine.id)}
+ 
               <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md transition-shadow overflow-hidden">
-                <div class="flex">
-                  <!-- Food Image Section - Future-proof for rectangular images -->
-                  <div class="relative w-32 h-32 flex-shrink-0">
+                <div class="flex flex-col sm:flex-row" >
+
+                  <!-- img part  -->
+                  <div class="relative w-full sm:w-32 h-40 sm:h-32 flex-shrink-0">
                     {#if cuisine.cuisine_image}
-                      <img src="{cuisine.cuisine_image}" alt="{cuisine.cuisine_name}" class="w-full h-full object-cover rounded-l-lg" />
+                      <img src="{cuisine.cuisine_image}" alt="{cuisine.cuisine_name}" class="w-full h-full object-cover sm:rounded-l-lg rounded-t-lg sm:rounded-t-none" />
                     {:else}
-                      <div class="w-full h-full bg-gradient-to-br from-orange-100 to-red-100 dark:from-gray-700 dark:to-gray-600 flex items-center justify-center rounded-l-lg">
-                        <img src="{nn}" alt="Food" class="w-[90%] h-[90%] opacity-60" />
+                      <div class="w-full h-full bg-gradient-to-br from-orange-300 to-red-300 dark:from-gray-700 dark:to-gray-600 flex items-center justify-center sm:rounded-l-lg rounded-t-lg sm:rounded-t-none">
+                        <img src="{nn}" alt="Food" class="w-[90%] h-[90%] opacity-90" />
                       </div>
                     {/if}
-                    <!-- Veg/Non-veg Indicator -->
                     <div class="absolute top-2 right-2">
                       <div class="w-6 h-6 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-sm">
-                        <div class="w-3 h-3 rounded-full"
-                             style="background-color: {cuisine.category === 'Veg' ? '#22c55e' : '#ef4444'}"></div>
+                        <div class="w-3 h-3 rounded-full" style="background-color: {cuisine.category === 'Veg' ? '#22c55e' : '#ef4444'}"></div>
                       </div>
                     </div>
                   </div>
                   
-                  <!-- Content Section -->
-                  <div class="flex-1 p-4">
-                    <div class="flex items-start justify-between h-full">
-                      <!-- Item Info -->
-                      <div class="flex-1 pr-4">
-                        <div class="flex items-center gap-2 mb-1">
-                          <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                  <!-- Cuisine name and price details and actions -->
+                  <div class="flex-1 p-3 sm:p-4">
+                    <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between h-full gap-3">
+
+                      <!-- cuisine details : -->
+                      <div class="flex-1">
+                        <div class="flex items-center gap-2 mb-1 flex-wrap">
+                          <h3 class="text-base sm:text-lg font-semibold text-gray-900 dark:text-white">
                             {cuisine.cuisine_name}
                           </h3>
                           <Badge 
@@ -598,19 +161,20 @@ Ne Menu Page:
                             {cuisine.category}
                           </Badge>
                         </div>
-                        <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">
+                        <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mb-2 sm:mb-3">
                           Fresh ingredients, authentic flavors
                         </p>
                       </div>
-                      
-                      <!-- Action Buttons -->
-                      <div class="flex gap-2 flex-shrink-0">
+
+                      <div class="flex gap-2 flex-shrink-0 w-full sm:w-auto justify-end">
                         {#if cuisine.price_half}
                           <Button 
                             size="sm"
                             color="light"
-                            class="px-3 py-2 border border-orange-200 hover:border-orange-400 hover:bg-orange-50 dark:hover:bg-orange-900/20"
-                            onclick={() => addToCart(cuisine, 'half')}>
+                            class="flex-1 sm:flex-none px-2 sm:px-3 py-2 border border-orange-200 hover:border-orange-400 hover:bg-orange-50 dark:hover:bg-orange-900/20"
+                            
+                            onclick={() => cart.addToCart(cuisine, 'half', restaurant_id, restaurant.name)}>
+                            
                             <div class="text-center">
                               <div class="text-xs text-gray-500 dark:text-gray-400">Half</div>
                               <div class="font-semibold text-sm">₹{cuisine.price_half}</div>
@@ -619,16 +183,20 @@ Ne Menu Page:
                         {/if}
                         <Button 
                           size="sm"
-                          class="px-3 py-2 bg-orange-500 hover:bg-orange-600 text-white"
-                          onclick={() => addToCart(cuisine, 'full')}>
+                          class="flex-1 sm:flex-none px-2 sm:px-3 py-2 bg-orange-500 hover:bg-orange-600 text-white"
+                          
+                          onclick={() => cart.addToCart(cuisine, 'full', restaurant_id, restaurant.name)}>
+                          
                           <div class="text-center">
                             <div class="text-xs opacity-90">Full</div>
                             <div class="font-semibold text-sm">₹{cuisine.price_full}</div>
                           </div>
                         </Button>
                       </div>
+
                     </div>
                   </div>
+
                 </div>
               </div>
             {/each}
@@ -636,69 +204,45 @@ Ne Menu Page:
         {/if}
       </div>
 
-      <!-- Compact Cart Section -->
       <div class="lg:col-span-4">
         <div class="lg:sticky lg:top-4">
           <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
             
-            <!-- Compact Cart Header -->
             <div class="p-4 border-b border-gray-200 dark:border-gray-700">
-              <div class="flex items-center gap-2 mb-2">
-                <ShoppingBagSolid class="text-orange-500" size="sm"/>
-                <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
-                  Your Cart
-                </h2>
-                {#if totalItemsInCart > 0}
-                  <span class="text-sm text-gray-500 dark:text-gray-400">
-                    ({totalItemsInCart} {totalItemsInCart === 1 ? 'item' : 'items'})
+              <div class="flex items-center justify-between gap-2 mb-2">
+                <div class="flex items-center gap-2">
+                  <ShoppingBagSolid class="text-orange-500" size="sm"/>
+                  <h2 class="text-lg font-semibold text-gray-900 dark:text-white inline">
+                    Your Cart
+                  </h2>
+                </div>
+                {#if $cart.restaurant.name}
+                  <span class="text-sm font-medium text-orange-500 truncate">
+                    from {$cart.restaurant.name}
                   </span>
                 {/if}
               </div>
             </div>
 
             {#if cartItems.length === 0}
-              <!-- Compact Empty Cart State -->
               <div class="p-8 text-center">
-                <div class="w-16 h-16 mx-auto mb-4 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center">
-                  <ShoppingBagSolid size="lg" class="text-gray-400 dark:text-gray-500" />
                 </div>
-                <h3 class="text-lg font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Cart is empty
-                </h3>
-                <p class="text-sm text-gray-500 dark:text-gray-400">
-                  Add items from the menu to get started
-                </p>
-              </div>
             {:else}
-              <!-- Compact Cart Items -->
               <div class="p-4 space-y-3 max-h-[400px] overflow-y-auto">
                 {#each cartItems as item (`${item.id}-${item.size}`)}
                   <div class="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-3">
                     
                     <div class="flex justify-between items-start mb-3">
-                      <div class="flex-1 pr-3">
-                        <h4 class="font-medium text-gray-900 dark:text-white text-sm mb-1">
-                          {item.name}
-                        </h4>
-                        <p class="text-xs text-gray-500 dark:text-gray-400 capitalize">
-                          {item.size} • ₹{item.price} each
-                        </p>
                       </div>
-                      <div class="text-right">
-                        <p class="text-sm font-semibold text-orange-600 dark:text-orange-400">
-                          ₹{(item.price * item.quantity).toFixed(2)}
-                        </p>
-                      </div>
-                    </div>
                     
-                    <!-- Compact Quantity Controls -->
                     <div class="flex items-center justify-end">
                       <div class="flex items-center gap-2 bg-white dark:bg-gray-800 rounded-md p-1 border border-gray-200 dark:border-gray-600">
                         <Button 
                           size="sm" 
                           color="light"
                           class="w-6 h-6 p-0 flex items-center justify-center text-sm hover:bg-red-50 dark:hover:bg-red-900/20"
-                          onclick={() => updateQuantity(`${item.id}-${item.size}`, -1)}>
+                          
+                          onclick={() => cart.updateQuantity(`${item.id}-${item.size}`, -1)}>
                           −
                         </Button>
                         <span class="w-8 text-center text-sm font-medium text-gray-900 dark:text-white">
@@ -708,7 +252,8 @@ Ne Menu Page:
                           size="sm" 
                           color="light"
                           class="w-6 h-6 p-0 flex items-center justify-center text-sm hover:bg-green-50 dark:hover:bg-green-900/20"
-                          onclick={() => updateQuantity(`${item.id}-${item.size}`, 1)}>
+                          
+                          onclick={() => cart.updateQuantity(`${item.id}-${item.size}`, 1)}>
                           +
                         </Button>
                       </div>
@@ -717,21 +262,11 @@ Ne Menu Page:
                 {/each}
               </div>
 
-              <!-- Compact Cart Summary -->
               <div class="p-4 border-t border-gray-200 dark:border-gray-700">
-                <div class="flex justify-between items-center mb-4">
-                  <span class="text-lg font-semibold text-gray-900 dark:text-white">Total</span>
-                  <span class="text-xl font-bold text-orange-600 dark:text-orange-400">
-                    ₹{clientTotalPrice.toFixed(2)}
-                  </span>
-                </div>
-                
-                <Button 
-                  size="lg" 
-                  class="w-full font-medium py-3 bg-orange-500 hover:bg-orange-600 text-white rounded-lg"
-                  onclick={submitOrder}>
-                  Place Order →
-                </Button>
+                <a use:link href="/usercart" 
+                   class="w-full text-center block font-medium py-3 bg-orange-500 hover:bg-orange-600 text-white rounded-lg">
+                  View Cart ({totalItemsInCart} {totalItemsInCart === 1 ? 'item' : 'items'})
+                </a>
               </div>
             {/if}
           </div>
@@ -739,7 +274,9 @@ Ne Menu Page:
       </div>
     </div>
   </div>
+
 </div>
+
 
 <style>
   /* Minimal scrollbar for cart items */
@@ -760,4 +297,7 @@ Ne Menu Page:
     background: #9ca3af;
   }
 </style>
+
 ```
+
+============================================================

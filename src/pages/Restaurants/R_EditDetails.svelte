@@ -2,19 +2,18 @@
   import { onMount } from 'svelte';
   import { link, push } from 'svelte-spa-router';
   import { Card, Alert, Input, Label, Spinner, Fileupload, Button, GradientButton } from "flowbite-svelte";
-   import { InfoCircleSolid, EnvelopeSolid } from "flowbite-svelte-icons";
-   import { Info, Image, Hotel } from 'lucide-svelte';
+  import { InfoCircleSolid, EnvelopeSolid } from "flowbite-svelte-icons";
+  import { Info, Image, Hotel } from 'lucide-svelte';
   import { fly } from "svelte/transition";
-
-  
-  import routesType from "../../config/backend_routes.js";
-  // import { isAuthorized } from '../../stores/authStore.js';
 
   import HeaderAlongNav from '../../components/header/HeaderAlongNav.svelte';
   import ButtonComp from '../../components/Buttons/ButtonComp.svelte';
-
+  
+  import routesType from "../../config/backend_routes.js";
   import Move from '../../utils/moveOsc.js';
   import ButtonDesign from '../../utils/buttonDes.js';
+  import GeneralStyle from '../../utils/restaurants/generalStyle.js';
+  // import { isAuthorized } from '../../stores/authStore.js';
   
   let loading = true;
   let error = null;
@@ -38,6 +37,9 @@
   let newImageUrl = '';
 
   const bd = new ButtonDesign();
+  const cardDarkStyle = new GeneralStyle().CardDarkBg();
+  const labelDarkStyle = new GeneralStyle().LabelDarkBg();
+
 
 
   function handleImageChange(e) {
@@ -207,20 +209,20 @@
 
           <!-- Info Card -->
           <div class="space-y-6 md:col-span-5 lg:col-span-6" >
-            <Card class="w-full max-w-none dark:bg-[#172135] rounded-3xl shadow-xl p-8 space-y-4 " >
+            <Card class="w-full max-w-none {cardDarkStyle} rounded-3xl shadow-xl p-8 space-y-4 " >
                 <h2 class="text-2xl font-extrabold dark:text-white flex items-center gap-5 "><Info size={40} color="#a3a395" strokeWidth={3} /> Restaurant Info</h2>
     
-                <div class=" bg-gray-100 dark:bg-[#0f1729] rounded-lg p-4">
+                <div class=" bg-gray-100 {labelDarkStyle} rounded-lg p-4">
                   <div class="text-sm dark:text-gray-400">Current Name</div>
                   <div class=" dark:text-white font-bold mt-1">{restaurant.name}</div>
                 </div>
     
-                <div class=" bg-gray-100 dark:bg-[#0f1729] rounded-lg p-4">
+                <div class=" bg-gray-100 {labelDarkStyle} rounded-lg p-4">
                   <div class="text-sm dark:text-gray-400">Location</div>
                   <div class=" dark:text-white font-bold mt-1">{restaurant.location}</div>
                 </div>
                 <a use:link href="/RStatus">
-                  <div class=" bg-gray-100 dark:bg-[#0f1729] rounded-lg p-4">
+                  <div class=" bg-gray-100 {labelDarkStyle} rounded-lg p-4">
                     <div class="text-sm dark:text-gray-400">Status</div>
                     <div class=" text-green-500 font-extrabold mt-1">{restaurant.status}</div>
                   </div>
@@ -229,9 +231,9 @@
             </Card>
           </div>
 
-          <!-- image  -->
+          <!-- image card  -->
           <div class="space-y-6 md:col-span-5 lg:col-span-6" >
-              <Card class="w-full max-w-none dark:bg-[#172135] rounded-3xl shadow-xl p-8 space-y-4 " >
+              <Card class="w-full max-w-none {cardDarkStyle} rounded-3xl shadow-xl p-8 space-y-4 " >
               <div class="flex flex-col items-center">
                 <div class="w-40 h-40 rounded-lg overflow-hidden bg-gray-200 dark:bg-[#151e31] ring-1 ring-gray-200 flex items-center justify-center mb-4">
                   <img src={newImageUrl || restaurant.image_url || 'https://via.placeholder.com/300x300?text=No+Image'} alt="restaurant" class="object-cover w-full h-full"/>
@@ -252,7 +254,7 @@
         <!-- Bottom: Contact & Location Details (spanning full width) -->
         <div class="grid grid-cols-1 lg:grid-cols-1 gap-8 auto-rows-fr">
           <div class="w-full">
-            <Card class="p-8 bg-white dark:bg-[#131c2f] rounded-3xl shadow-xl border border-gray-200 dark:border-gray-700 h-full w-full max-w-none">
+            <Card class="p-8 bg-white {cardDarkStyle} rounded-3xl shadow-xl border border-gray-200 dark:border-gray-700 h-full w-full max-w-none">
               <div class="mb-4">
                 <h2 class="text-2xl font-extrabold dark:text-white flex item-center gap-5 "><Hotel size={30} color="#e63a0f" strokeWidth={3} />Update Contact & Location Details</h2>
                 <p class=" dark:text-gray-400">Update your restaurant's contact information</p>
@@ -263,24 +265,24 @@
                 <div class="space-y-4">
                   <div>
                     <Label class=" text-sm dark:text-gray-300">Restaurant Name</Label>
-                    <Input type="text" bind:value={restaurant.name} class="mt-2 bg-gray-100 dark:bg-[#0f1729] border-none dark:text-white" required />
+                    <Input type="text" bind:value={restaurant.name} class="mt-2 bg-gray-100 {labelDarkStyle} border-none dark:text-white" required />
                   </div>
 
                   <div>
                     <Label class=" text-sm dark:text-gray-300">Mobile Number</Label>
-                    <Input type="tel" bind:value={restaurant.mobile_number} class="mt-2 bg-gray-100 dark:bg-[#0f1729] border-none dark:text-white" required />
+                    <Input type="tel" bind:value={restaurant.mobile_number} class="mt-2 bg-gray-100 {labelDarkStyle} border-none dark:text-white" required />
                   </div>
                 </div>
 
                 <div class="space-y-4">
                   <div>
                     <Label class=" text-sm dark:text-gray-300">Location</Label>
-                    <Input type="text" bind:value={restaurant.location} class="mt-2 bg-gray-100 dark:bg-[#0f1729] border-none dark:text-white" required />
+                    <Input type="text" bind:value={restaurant.location} class="mt-2 bg-gray-100 {labelDarkStyle} border-none dark:text-white" required />
                   </div>
 
                   <div>
                     <Label class="text-sm dark:text-gray-300">Support Email</Label>
-                    <Input type="email" bind:value={restaurant.support_email} class="mt-2 bg-gray-100 dark:bg-[#0f1729] border-none dark:text-white" required />
+                    <Input type="email" bind:value={restaurant.support_email} class="mt-2 bg-gray-100 {labelDarkStyle} border-none dark:text-white" required />
                   </div>
                 </div>
 

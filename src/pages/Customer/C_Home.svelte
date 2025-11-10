@@ -7,14 +7,12 @@
   import { user, isAuthorized } from "../../stores/authStore.js";
   import RestaurantCard from "../../components/Card/C_RestaurantCard.svelte";
 
-  // Restaurant State
-  let allRestaurants = []; // Master list
-  let displayedRestaurants = []; // Filtered list to show
+  let allRestaurants = []; 
+  let displayedRestaurants = [];
   let loading = true;
   let error = null;
   let err_msg = null;
-  // highestRatedRestaurant ki ab zaroorat nahi hai
-  
+
   // --- NEW Category State ---
   /**
    * @typedef {Object} CuisineCategory
@@ -26,9 +24,8 @@
   let categories = [];
   let categoriesLoading = true;
   let categoriesError = null;
-  let selectedCategory = null; // e.g., "Momos"
+  let selectedCategory = null; 
 
-  // --- Initial Fetch (All Restaurants) ---
   async function fetchInitialRestaurants() {
     loading = true;
     error = null;
@@ -42,8 +39,8 @@
       if (!response.ok) throw new Error(`Failed to fetch restaurants (Status: ${response.status})`);
       
       const data = await response.json();
-      allRestaurants = data; // Store in master list
-      displayedRestaurants = data; // Initially, display all
+      allRestaurants = data;
+      displayedRestaurants = data;
       
     } catch (err) {
       handleFetchError(err);
@@ -52,13 +49,20 @@
     }
   }
 
-  // --- NEW: Fetch Categories ---
   async function fetchCategories() {
     categoriesLoading = true;
     categoriesError = null;
     try {
-      const fetchUrl = `${routesType.current_route}/cuisine/categories`;
+      let fetchUrl = `${routesType.current_route}/cuisine/categories`;
+      const userLocation = $user?.current_location; 
+      
+      if (userLocation) {
+        fetchUrl += `?location=${encodeURIComponent(userLocation)}`;
+      }
+      
+      console.log(`Fetching categories from: ${fetchUrl}`);
       const response = await fetch(fetchUrl);
+
       if (!response.ok) throw new Error(`Failed to fetch categories (Status: ${response.status})`);
       categories = await response.json();
       console.log(`\n\tCategories are: ${JSON.stringify(categories)}`);
@@ -74,7 +78,6 @@
     }
   }
 
-  // --- Load BOTH on mount ---
   onMount(async () => {
     // Run both fetches at the same time
     await Promise.all([
@@ -83,17 +86,14 @@
     ]);
   });
 
-  // --- NEW: Handle Category Click ---
   async function handleCategorySelect(categoryName) {
-    if (selectedCategory === categoryName) return; // Already selected
+    if (selectedCategory === categoryName) return; 
 
     selectedCategory = categoryName;
     loading = true; // Show main spinner
     error = null;
     err_msg = null;
     
-    // Yahan hum ek naye API endpoint ko call kar rahe hain.
-    // Yeh aapko backend (FastAPI) mein banana hoga.
     const fetchUrl = `${routesType.current_route}/restaurant/by_category/${encodeURIComponent(categoryName)}`;
     console.log(`Fetching from new endpoint: ${fetchUrl}`);
 
@@ -107,26 +107,23 @@
       }
       displayedRestaurants = await response.json();
       if (displayedRestaurants.length === 0) {
-        // Handle case where API returns 200 OK but empty list
         err_msg = `No restaurants found serving ${categoryName}.`;
       }
     } catch (err) {
       handleFetchError(err);
-      displayedRestaurants = []; // Clear list on error
+      displayedRestaurants = [];
     } finally {
       loading = false;
     }
   }
 
-  // --- NEW: Clear category filter ---
   function showAllRestaurants() {
     selectedCategory = null;
-    displayedRestaurants = allRestaurants; // Use the master list
+    displayedRestaurants = allRestaurants;
     error = null;
     err_msg = null;
   }
 
-  // --- Helper for errors (remains the same) ---
   function handleFetchError(err) {
      if (err instanceof Error) {
        error = err;

@@ -7,9 +7,6 @@
   import HeaderAlongNav from '../../components/header/HeaderAlongNav.svelte';
   import Cuisines from '../../utils/restaurants/CuisineFeatures.js';
   
-  // const cuisine = new Cuisines().cuisine_types();
-  // let cuisine_type = cuisine.cuisine_types(); 
-  
   const cuisine_type = new Cuisines().cuisine_types();
 
   let cuisines = $state([]);
@@ -198,8 +195,7 @@
 </div>
 
 {#if editingCuisine}
-<Modal title="Edit Cuisine" bind:open={showEditModal}>
-    <!-- <form onsubmit = {handleUpdate}> YA <form on:submit={handleUpdate}> -->
+<Modal title="Edit Cuisine" bind:open={showEditModal} class="max-w-lg  " >
     <form onsubmit={handleUpdate}>
         <div class="space-y-4 p-4">
           <Label>
@@ -218,7 +214,7 @@
               Cuisine Type
               <ChevronDownOutline class="ms-2 h-4 w-4 text-gray-600 dark:text-gray-300" />
           </Label>
-          <Dropdown>
+          <Dropdown  >
             <div class="p-3">
               <Search size="md" bind:value={searchTerm} />
             </div>

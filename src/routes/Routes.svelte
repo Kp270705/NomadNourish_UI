@@ -38,6 +38,7 @@
   import SearchResults from '../pages/Customer/SearchResults.svelte';
   import UserSettings from '../pages/Customer/settings/UserInfo.svelte';
   import Others from '../components/Drawer/Others.svelte';
+  import UserCart from '../pages/Customer/UserCart.svelte';
 
 
   // export let isLogin
@@ -62,6 +63,7 @@
     '/searchpage':SearchPage,
     '/search-results/:type/:query': SearchResults,
     '/usersettings': UserSettings,
+    '/usercart': UserCart,
     // -----------------------------------------------
     // Restaurant:
     "/RHome": RHome,

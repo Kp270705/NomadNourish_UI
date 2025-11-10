@@ -2,7 +2,7 @@
     import { link } from "svelte-spa-router";
     import { Drawer, CardPlaceholder, Button, Sidebar, SidebarWrapper, SidebarDropdownWrapper, SidebarGroup, SidebarItem } from "flowbite-svelte";
     import { ChartPieSolid, CartSolid, GridSolid, MailBoxSolid, UsersSolid, ShoppingBagSolid, ArrowRightToBracketOutline, EditOutline } from "flowbite-svelte-icons";
-    import { isAuthorized, checkAuth, logout } from "../../stores/authStore";
+    import { isAuthorized, checkAuth, logout, userType } from "../../stores/authStore";
 
     import CancelModal from "../alert/CancelModal.svelte";
 
@@ -44,7 +44,7 @@
     <SidebarWrapper class="overflow-y-auto rounded-sm px-3 py-0 dark:bg-gray-800">
       <SidebarGroup>
 
-        <a use:link href="/CMy-orders">
+        <a use:link href="{$userType==='user'?'/CMy-orders':'/ROrderHistory'}">
             <SidebarItem label="My Orders">
             {#snippet icon()}
                 <ChartPieSolid class="h-5 w-5 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white" />

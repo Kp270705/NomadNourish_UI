@@ -47,37 +47,35 @@
     },
     {
       id: 2,
-      label: "Order History",
-      href: "/ROrderHistory",
-      colorStyle:
-        " bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 "
-    },
-    {
-      id: 3,
-      label: "Edit Details",
-      href: "/REditDetails",
-      colorStyle: "bg-yellow-400 hover:bg-yellow-500 dark:bg-yellow-500 dark:hover:bg-yellow-600 "
-    },
-    {
-      id: 4,
       label: "Manage Cuisine",
       href: "/RManageCuisine",
       colorStyle: "bg-green-500 hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-700"
     },
     {
+      id: 3,
+      label: "Manage Orders",
+      href: "/RManageorders",
+      colorStyle:" bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 "
+    },
+    {
+      id: 4,
+      label: "Order History",
+      href: "/ROrderHistory",
+      // colorStyle: "bg-pink-500 hover:bg-pink-600 dark:bg-pink-600 dark:hover:bg-pink-700",
+      colorStyle: "bg-yellow-400 hover:bg-yellow-500 dark:bg-yellow-500 dark:hover:bg-yellow-600 "
+    },
+    {
       id: 5,
+      label: "Edit Details",
+      href: "/REditDetails",
+      colorStyle: " bg-pink-500 hover:bg-pink-600 dark:bg-pink-600 dark:hover:bg-pink-700 "
+    },
+    {
+      id: 6,
       label: "Edit Status",
       href: "/RStatus",
       colorStyle:
         "bg-red-500 hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700"
-    },
-    {
-      id: 6,
-      label: "Manage Orders",
-      href: "/RManageorders",
-      // spans two columns on small screens to mirror React’s layout nuance
-      colorStyle:
-      "bg-pink-500 hover:bg-pink-600 dark:bg-pink-600 dark:hover:bg-pink-700",
     },
   ];
 
