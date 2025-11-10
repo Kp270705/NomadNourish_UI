@@ -61,7 +61,6 @@
       id: 4,
       label: "Order History",
       href: "/ROrderHistory",
-      // colorStyle: "bg-pink-500 hover:bg-pink-600 dark:bg-pink-600 dark:hover:bg-pink-700",
       colorStyle: "bg-yellow-400 hover:bg-yellow-500 dark:bg-yellow-500 dark:hover:bg-yellow-600 "
     },
     {
@@ -161,9 +160,6 @@
   $:ds_des = toggleDesign(restaurant_info.delivery_status?.toLocaleLowerCase())
 
 </script>
-
-
-
 
 
 <div class="min-h-screen dark:bg-[#0a101d] dark:text-white p-6 lg:p-8" >
